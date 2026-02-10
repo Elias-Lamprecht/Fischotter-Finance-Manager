@@ -6,7 +6,7 @@ import {
      numeric,
 } from 'drizzle-orm/pg-core';
 
-export const transaction = pgTable('transactions', {
+export const subscription = pgTable('subscriptions', {
      id: uuid('id').defaultRandom().primaryKey(),
      owner_id: uuid('owner_id').notNull(),
      account_id: uuid('account_id').notNull(),
@@ -14,5 +14,5 @@ export const transaction = pgTable('transactions', {
      description: varchar('description', { length: 128 }),
      type: varchar('type', { length: 16 }).notNull(),
      value: numeric('value', { precision: 12, scale: 2 }).notNull(),
-     created_at: timestamp('created_at').notNull().defaultNow(),
+     created_at: timestamp('created_at').defaultNow(),
 });

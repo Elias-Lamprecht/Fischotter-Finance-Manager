@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "username" VARCHAR(32) NOT NULL UNIQUE,
     "displayname" VARCHAR(32) NOT NULL,
     "password" VARCHAR(64) NOT NULL,
-    "created_at" TIMESTAMP NOT NULL DEFAULT NOW()
+    "created_at" TIMESTAMP DEFAULT NOW()
 );
 
 -- ----------------------------
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "accounts" (
     "owner_id" UUID NOT NULL,
     "title" VARCHAR(32) NOT NULL,
     "description" VARCHAR(128),
-    "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+    "created_at" TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_accounts_owner_id_users
         FOREIGN KEY ("owner_id")
         REFERENCES "users"("id")
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "subscriptions" (
     "days" INTEGER NOT NULL,
     "months" INTEGER NOT NULL,
     "years" INTEGER NOT NULL,
-    "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+    "created_at" TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_subscriptions_owner_id_users
         FOREIGN KEY ("owner_id")
         REFERENCES "users"("id")
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS "transactions" (
     "description" VARCHAR(128),
     "type" VARCHAR(16) NOT NULL,
     "value" NUMERIC(12,2) NOT NULL,
-    "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+    "created_at" TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_transactions_owner_id_users
         FOREIGN KEY ("owner_id")
         REFERENCES "users"("id")
