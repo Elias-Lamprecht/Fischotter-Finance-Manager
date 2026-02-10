@@ -8,7 +8,9 @@ class UserManager {
           await db.delete(user).where(eq(user.id, id));
      }
      public deleteMany() {}
-     public deleteAll() {}
+     public async deleteAll() {
+          await db.delete(user);
+     }
 
      // Create Functions
      public async create(
