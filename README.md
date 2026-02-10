@@ -5,6 +5,11 @@
 > 1.   this is a hobby project and not close to done.
 > 2.   to test this project you need [pnpm](https://pnpm.io/).
 
+> [!WARNING]
+>
+> 1.   A Database is needed.
+> 2.   The only tested and working Database is Postgres others might work too.
+
 ### Current Install / Use Method for Developing (there is no usable version at this moment)
 
 ```
