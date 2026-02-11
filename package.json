@@ -13,6 +13,7 @@
           "db:studio": "npx drizzle-kit studio"
      },
      "dependencies": {
+          "bcrypt": "^6.0.0",
           "drizzle-orm": "^0.45.1",
           "nuxt": "^4.3.1",
           "pg": "^8.18.0",
@@ -21,6 +22,7 @@
           "vue-router": "^4.6.4"
      },
      "devDependencies": {
+          "@types/bcrypt": "^6.0.0",
           "@types/node": "^25.2.2",
           "@types/pg": "^8.16.0",
           "drizzle-kit": "^0.31.9"
