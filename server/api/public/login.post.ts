@@ -8,11 +8,7 @@ export default defineEventHandler(async (event) => {
      const body = await readBody(event);
 
      if (!body.username_or_email || !body.password) {
-          // TODO: Add the generalized Error Messages
-          return {
-               success: false,
-               message: 'Missing Username / Email or Password',
-          };
+          return { success: false, message: 'Missing Username / Email or Password' };
      }
 
      const existingUser = await db
@@ -31,33 +27,25 @@ export default defineEventHandler(async (event) => {
           return { success: false, message: "User doesn't exist" };
      }
 
-     const isPasswordValid = await bcrypt.compare(
-          body.password,
-          existingUser[0]?.password || '',
-     );
+     const userRecord = existingUser[0]!;
+     const isPasswordValid = await bcrypt.compare(body.password, userRecord.password);
 
      // TODO: Add the generalized Error Messages
      if (!isPasswordValid) {
           return { success: false, message: 'Invalid Credentials' };
      }
 
-     // TODO: Add the generalized Error Messages
-     if (!process.env.JWT_SECRET) {
-          throw new Error('JWT_SECRET is not defined');
-     }
-
-     const expiresIn: SignOptions['expiresIn'] =
-          (process.env.JWT_EXPIRE_TIME as SignOptions['expiresIn']) || '30m';
+     if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
 
      const token = jwt.sign(
           {
-               id: existingUser[0]?.id,
-               username: existingUser[0]?.username,
-               email: existingUser[0]?.email,
-               role: existingUser[0]?.role,
+               id: userRecord.id,
+               username: userRecord.username,
+               displayname: userRecord.displayname,
+               role: userRecord.role,
           },
-          process.env.JWT_SECRET as string,
-          { expiresIn },
+          process.env.JWT_SECRET!,
+          { expiresIn: '30m' },
      );
 
      setCookie(event, 'auth', token, {
@@ -65,6 +53,7 @@ export default defineEventHandler(async (event) => {
           secure: true,
           sameSite: 'lax',
           path: '/',
+          maxAge: 60 * 30,
      });
 
      // TODO: Add the generalized Error Messages

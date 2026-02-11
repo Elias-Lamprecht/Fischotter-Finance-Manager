@@ -1,6 +1,6 @@
 import { db } from '../../database/client';
 import { user } from '../../database/schema/user';
-import { eq } from 'drizzle-orm';
+import { eq, or } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 
 const SALT_ROUNDS: number = parseInt(process.env.SALT_ROUNDS || '10', 10);
@@ -19,14 +19,20 @@ export default defineEventHandler(async (event) => {
      }
 
      try {
-          const existingUsers = await db
+          const existingUser = await db
                .select()
                .from(user)
-               .where(eq(user.username, body.username));
+               .where(
+                    or(
+                         eq(user.email, body.username_or_email),
+                         eq(user.username, body.username_or_email),
+                    ),
+               )
+               .limit(1);
 
           // TODO: Add the generalized Error Messages
-          if (existingUsers.length > 0) {
-               return { success: false, message: 'Username already exists' };
+          if (existingUser.length > 0) {
+               return { success: false, message: 'Username already taken' };
           }
 
           const hashedPassword = await hashPassword(body.password);
