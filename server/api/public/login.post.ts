@@ -1,4 +1,4 @@
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { db } from '../../database/client';
 import { user } from '../../database/schema/user';
@@ -40,9 +40,11 @@ export default defineEventHandler(async (event) => {
      const token = jwt.sign(
           {
                id: userRecord.id,
+               email: userRecord.email,
                username: userRecord.username,
                displayname: userRecord.displayname,
                role: userRecord.role,
+               created_at: userRecord.created_at,
           },
           process.env.JWT_SECRET!,
           { expiresIn: '30m' },
