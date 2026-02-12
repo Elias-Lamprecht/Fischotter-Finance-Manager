@@ -30,6 +30,8 @@
 
      <p v-if="error" style="color: red">{{ error }}</p>
 
+     <p>User Count: {{ UserCount }}</p>
+
      <ul v-for="user in users" :key="user.id">
           <li>ID: <input type="text" :value="user.id" disabled /></li>
 
@@ -83,6 +85,7 @@
 import { ref, onMounted } from 'vue';
 
 const users = ref([]);
+const UserCount = ref(0);
 const username = ref('');
 const email = ref('');
 const password = ref('');
@@ -95,6 +98,7 @@ const loading_delete_all_users = ref(false);
 // fetch users when component mounts
 onMounted(async () => {
      await FetchAllUsers();
+     await FetchUserCount();
 });
 
 async function FetchAllUsers() {
@@ -105,13 +109,34 @@ async function FetchAllUsers() {
           });
 
           const data = await response.json();
-          console.log(data);
 
           if (!data.success) {
                error.value = data.message || 'Failed to load data.';
           } else {
-               console.log(data.safeResult);
                users.value = data.safeResult || [];
+          }
+     } catch (err) {
+          error.value = 'Network or server error';
+          console.error(err);
+     }
+}
+
+async function FetchUserCount() {
+     try {
+          const response = await fetch(
+               'http://localhost:3000/api/statistics/management/count/all/users',
+               {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+               },
+          );
+
+          const data = await response.json();
+
+          if (!data.success) {
+               error.value = data.message || 'Failed to load data.';
+          } else {
+               UserCount.value = data.result || 0;
           }
      } catch (err) {
           error.value = 'Network or server error';
@@ -169,7 +194,7 @@ async function DeleteAllUsers() {
           console.error(err);
      } finally {
           loading_delete_all_users.value = false;
-          await FetchAllUsers();
+          await Promise.all([FetchAllUsers(), FetchUserCount()]);
      }
 }
 
@@ -196,7 +221,7 @@ async function DeleteUser(id) {
           console.error(err);
      } finally {
           loading_delete_user.value = false;
-          await FetchAllUsers();
+          await Promise.all([FetchAllUsers(), FetchUserCount()]);
      }
 }
 
@@ -230,7 +255,7 @@ async function CreateNewUser() {
           console.error(err);
      } finally {
           loading_new_user.value = false;
-          await FetchAllUsers();
+          await Promise.all([FetchAllUsers(), FetchUserCount()]);
      }
 }
 </script>
