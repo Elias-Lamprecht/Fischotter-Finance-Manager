@@ -10,6 +10,8 @@
                <input v-model="password" id="password" type="password" required />
           </div>
 
+          <br /><a href="/public/register">Register</a> <br /><br />
+
           <button type="submit" :disabled="loading">
                {{ loading ? 'Logging in...' : 'Login' }}
           </button>

@@ -7,13 +7,15 @@
 
           <div>
                <label for="email">email:</label>
-               <input v-model="email" id="email" type="text" required />
+               <input v-model="email" id="email" type="text" />
           </div>
 
           <div>
                <label for="password">password:</label>
                <input v-model="password" id="password" type="text" required />
           </div>
+
+          <br /><a href="/public/login">Login</a> <br /><br />
 
           <button type="submit" :disabled="loading">
                {{ loading ? 'Creating...' : 'Create Account' }}
