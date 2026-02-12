@@ -31,11 +31,22 @@
      <p v-if="error" style="color: red">{{ error }}</p>
 
      <ul v-for="user in users" :key="user.id">
-          <li>ID: {{ user.id }}</li>
-          <li v-if="user.email">Email: {{ user.email }}</li>
-          <li>Username: {{ user.username }}</li>
-          <li v-if="user.username !== user.displayname">Displayname: {{ user.displayname }}</li>
-          <li>Role: {{ user.role }}</li>
+          <li>ID: <input type="text" :value="user.id" disabled /></li>
+
+          <li v-if="user.email">Email: <input type="text" v-model="user.email" /></li>
+
+          <li>Username: <input type="text" v-model="user.username" /></li>
+
+          <li>Displayname: <input type="text" v-model="user.displayname" /></li>
+
+          <li>
+               Role:
+               <select v-model="user.role">
+                    <option value="user">user</option>
+                    <option value="admin">admin</option>
+               </select>
+          </li>
+
           <li>
                Created at:
                {{
@@ -48,9 +59,16 @@
                     })
                }}
           </li>
+
           <li>
-               <button v-on:click="DeleteUser(user.id)">Delete User</button>
+               <button @click="DeleteUser(user.id)">Delete User</button>
           </li>
+
+          <li>
+               <button @click="UpdateUser(user)">Update User</button>
+          </li>
+
+          <br />
      </ul>
 </template>
 
@@ -91,6 +109,33 @@ async function FetchAllUsers() {
      } catch (err) {
           error.value = 'Network or server error';
           console.error(err);
+     }
+}
+
+async function UpdateUser(user) {
+     try {
+          const response = await fetch('http://localhost:3000/api/management/modify/user', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({
+                    id: user.id,
+                    username: user.username,
+                    displayname: user.displayname,
+                    email: user.email,
+                    role: user.role,
+               }),
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+               error.value = data.message || 'Failed to update user';
+          }
+     } catch (err) {
+          error.value = 'Network or server error';
+          console.error(err);
+     } finally {
+          await FetchAllUsers();
      }
 }
 
