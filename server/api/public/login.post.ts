@@ -28,6 +28,11 @@ export default defineEventHandler(async (event) => {
      }
 
      const userRecord = existingUser[0]!;
+
+     // TODO: Add the generalized Error Messages
+     if (userRecord.status == 'disabled') {
+          return { success: false, message: 'Account hasnt been activated' };
+     }
      const isPasswordValid = await bcrypt.compare(body.password, userRecord.password);
 
      // TODO: Add the generalized Error Messages

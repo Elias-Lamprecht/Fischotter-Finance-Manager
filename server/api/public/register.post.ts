@@ -44,6 +44,7 @@ export default defineEventHandler(async (event) => {
                     displayname: body.username,
                     password: hashedPassword,
                     role: 'user',
+                    status: 'disabled',
                     email: body.email,
                })
                .returning();

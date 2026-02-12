@@ -24,9 +24,9 @@ export default defineEventHandler(async (event) => {
                     displayname: body.displayname,
                     role: body.role,
                     email: body.email,
+                    status: body.status,
                })
                .where(eq(user.id, body.id));
-          console.log('returned true!');
 
           return { success: true };
      } catch (error: any) {

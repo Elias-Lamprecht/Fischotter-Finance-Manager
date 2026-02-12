@@ -46,6 +46,13 @@
                     <option value="admin">admin</option>
                </select>
           </li>
+          <li>
+               Status:
+               <select v-model="user.status">
+                    <option value="active">active</option>
+                    <option value="disabled">disabled</option>
+               </select>
+          </li>
 
           <li>
                Created at:
@@ -123,6 +130,7 @@ async function UpdateUser(user) {
                     displayname: user.displayname,
                     email: user.email,
                     role: user.role,
+                    status: user.status,
                }),
           });
 
