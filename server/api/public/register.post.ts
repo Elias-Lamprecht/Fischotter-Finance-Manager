@@ -13,7 +13,6 @@ async function hashPassword(plainPassword: string) {
 export default defineEventHandler(async (event) => {
      const body = await readBody(event);
 
-     // TODO: Add the generalized Error Messages
      if (!body.username || !body.password) {
           return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
      }
@@ -30,7 +29,6 @@ export default defineEventHandler(async (event) => {
                )
                .limit(1);
 
-          // TODO: Add the generalized Error Messages
           if (existingUser.length > 0) {
                return { state: 'error', message: ERRORS.AUTH.USERNAME_TAKEN };
           }
@@ -49,7 +47,6 @@ export default defineEventHandler(async (event) => {
                })
                .returning();
 
-          // TODO: Add the generalized Error Messages
           if (!newUser) {
                return { state: 'error', message: ERRORS.GENERAL.ERROR };
           }
@@ -66,6 +63,5 @@ export default defineEventHandler(async (event) => {
           };
      } catch (error: any) {
           console.log('Register API Error:', error);
-          return { success: false, error: error?.message ?? error };
      }
 });

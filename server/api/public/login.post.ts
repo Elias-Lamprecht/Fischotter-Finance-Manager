@@ -23,22 +23,19 @@ export default defineEventHandler(async (event) => {
           )
           .limit(1);
 
-     // TODO: Add the generalized Error Messages
      if (existingUser.length === 0) {
-          return { state: 'error', message: ERRORS.AUTH.NOT_FOUND };
+          return { state: 'denied', message: ERRORS.AUTH.USER_NOT_FOUND };
      }
 
      const userRecord = existingUser[0]!;
 
-     // TODO: Add the generalized Error Messages
      if (userRecord.status == 'disabled') {
-          return { state: 'error', message: ERRORS.AUTH.NOT_ACTIVE };
+          return { state: 'denied', message: ERRORS.AUTH.NOT_ACTIVE };
      }
      const isPasswordValid = await bcrypt.compare(body.password, userRecord.password);
 
-     // TODO: Add the generalized Error Messages
      if (!isPasswordValid) {
-          return { state: 'error', message: ERRORS.AUTH.WRONG_PASSWORD };
+          return { state: 'denied', message: ERRORS.AUTH.INVALID_CREDENTIALS };
      }
 
      if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
@@ -64,6 +61,5 @@ export default defineEventHandler(async (event) => {
           maxAge: 60 * 30,
      });
 
-     // TODO: Add the generalized Error Messages
      return { state: 'success', data: token };
 });
