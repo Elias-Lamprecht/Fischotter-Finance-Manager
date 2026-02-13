@@ -1,5 +1,6 @@
 import { db } from '../../database/client';
 import { user } from '../../database/schema/user';
+import { ERRORS } from '~~/server/utils/errors';
 import { eq, or } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 
@@ -14,8 +15,7 @@ export default defineEventHandler(async (event) => {
 
      // TODO: Add the generalized Error Messages
      if (!body.username || !body.password) {
-          console.log('Username:', body.username, 'Password:', body.password);
-          return { success: false, message: 'missing Fields' };
+          return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
      }
 
      try {
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
           // TODO: Add the generalized Error Messages
           if (existingUser.length > 0) {
-               return { success: false, message: 'Username already taken' };
+               return { state: 'error', message: ERRORS.AUTH.USERNAME_TAKEN };
           }
 
           const hashedPassword = await hashPassword(body.password);
@@ -51,18 +51,17 @@ export default defineEventHandler(async (event) => {
 
           // TODO: Add the generalized Error Messages
           if (!newUser) {
-               return {
-                    success: false,
-                    message: 'A error occurred while trying to register the user please try later again.',
-               };
+               return { state: 'error', message: ERRORS.GENERAL.ERROR };
           }
 
           return {
-               success: true,
-               user: {
-                    id: newUser.id,
-                    username: newUser.username,
-                    email: newUser.email,
+               state: 'success',
+               data: {
+                    user: {
+                         id: newUser?.id,
+                         username: newUser.username,
+                         email: newUser?.email,
+                    },
                },
           };
      } catch (error: any) {

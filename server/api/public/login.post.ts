@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { ERRORS } from '~~/server/utils/errors';
 import { db } from '../../database/client';
 import { user } from '../../database/schema/user';
 import { eq, or } from 'drizzle-orm';
@@ -8,7 +9,7 @@ export default defineEventHandler(async (event) => {
      const body = await readBody(event);
 
      if (!body.username_or_email || !body.password) {
-          return { success: false, message: 'Missing Username / Email or Password' };
+          return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
      }
 
      const existingUser = await db
@@ -24,20 +25,20 @@ export default defineEventHandler(async (event) => {
 
      // TODO: Add the generalized Error Messages
      if (existingUser.length === 0) {
-          return { success: false, message: "User doesn't exist" };
+          return { state: 'error', message: ERRORS.AUTH.NOT_FOUND };
      }
 
      const userRecord = existingUser[0]!;
 
      // TODO: Add the generalized Error Messages
      if (userRecord.status == 'disabled') {
-          return { success: false, message: 'Account hasnt been activated' };
+          return { state: 'error', message: ERRORS.AUTH.NOT_ACTIVE };
      }
      const isPasswordValid = await bcrypt.compare(body.password, userRecord.password);
 
      // TODO: Add the generalized Error Messages
      if (!isPasswordValid) {
-          return { success: false, message: 'Invalid Credentials' };
+          return { state: 'error', message: ERRORS.AUTH.WRONG_PASSWORD };
      }
 
      if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
@@ -64,5 +65,5 @@ export default defineEventHandler(async (event) => {
      });
 
      // TODO: Add the generalized Error Messages
-     return { success: true, token };
+     return { state: 'success', data: token };
 });
