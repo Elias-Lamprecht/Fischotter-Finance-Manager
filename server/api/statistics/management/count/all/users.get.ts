@@ -12,8 +12,7 @@ export default defineEventHandler(async (event) => {
      }
 
      if (FullAuthCookieContent.role !== 'admin') {
-          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS
- };
+          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
      }
 
      try {

@@ -194,15 +194,13 @@ async function FetchAccountCount() {
                method: 'GET',
           });
 
-          const data = response;
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to load data.';
+          if (!response.state === 'success') {
+               error.value = response.message || 'Failed to load data.';
           } else {
-               AccountsCount.value = data.result || 0;
+               AccountsCount.value = response.data || 0;
           }
      } catch (err) {
-          error.value = 'Network or server error';
+          error.value = ERRORS.GENERAL.ERROR;
           console.error(err);
      }
 }
