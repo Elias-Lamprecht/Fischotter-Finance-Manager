@@ -67,6 +67,8 @@
      </ul>
 </template>
 <script setup>
+import { ERRORS } from '~~/server/utils/errors';
+
 const owner_id = ref('751e3176-9243-4fdd-b0fc-527463562278');
 const title = ref('');
 const description = ref('');
@@ -91,14 +93,11 @@ async function DeleteAllAccounts() {
                method: 'DELETE',
           });
 
-          const data = response;
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to delete.';
+          if (!response.state === 'success') {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           loading_delete_all_accounts.value = false;
           await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
@@ -114,14 +113,11 @@ async function DeleteAccount(id) {
                },
           });
 
-          const data = response;
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to create account';
+          if (!response.state === 'success') {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
      }
@@ -132,25 +128,22 @@ async function CreateNewAccount() {
      try {
           const response = await $fetch('/api/management/create/account', {
                method: 'POST',
-               body: JSON.stringify({
+               body: {
                     owner_id: owner_id.value,
                     title: title.value,
                     description: description.value,
-               }),
+               },
           });
 
-          const data = response;
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to create account';
-          } else {
+          if (response.state === 'success') {
                owner_id.value = '';
                title.value = '';
                description.value = '';
+          } else {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           loading_new_account.value = false;
           await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
@@ -169,14 +162,11 @@ async function UpdateAccount(account) {
                },
           });
 
-          const data = response;
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to update account';
+          if (!response.state === 'success') {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           await FetchAllAccounts();
      }
@@ -188,16 +178,13 @@ async function FetchAllAccounts() {
                method: 'GET',
           });
 
-          const data = response;
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to load data.';
+          if (response.state === 'success') {
+               accounts.value = response.data || [];
           } else {
-               accounts.value = data.result || [];
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      }
 }
 
