@@ -30,36 +30,27 @@ const username_or_email = ref('');
 const password = ref('');
 const loading = ref(false);
 const error = ref('');
-const success = ref(false);
 
 async function submitForm() {
      loading.value = true;
      error.value = '';
-     success.value = false;
 
      try {
-          const response = await fetch('http://localhost:3000/api/public/login', {
+          const response = await $fetch('/api/public/login', {
                method: 'POST',
-               headers: {
-                    'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({
+               body: {
                     username_or_email: username_or_email.value,
                     password: password.value,
-               }),
+               },
           });
 
-          const data = await response.json();
+          const data = response;
 
-          if (!data.success) {
+          if (!data.state === 'success') {
                error.value = data.message || 'Failed to login.';
           } else {
-               success.value = true;
-               username_or_email.value = '';
-               password.value = '';
+               router.push('/home');
           }
-
-          router.push('/home');
      } catch (err) {
           error.value = 'Network or server error';
           console.error(err);

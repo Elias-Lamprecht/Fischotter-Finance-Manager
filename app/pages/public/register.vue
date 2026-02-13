@@ -32,7 +32,9 @@ import { ref } from 'vue';
 const username = ref('');
 const email = ref('');
 const password = ref('');
+
 const loading = ref(false);
+
 const error = ref('');
 const success = ref(false);
 
@@ -42,28 +44,24 @@ async function submitForm() {
      success.value = false;
 
      try {
-          const response = await fetch('http://localhost:3000/api/public/register', {
+          const response = await $fetch('/api/public/register', {
                method: 'POST',
-               headers: {
-                    'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({
+               body: {
                     username: username.value,
                     email: email.value,
                     password: password.value,
-               }),
+               },
           });
 
-          const data = await response.json();
+          const data = response;
 
-          if (!data.success) {
+          if (!data.state === 'success') {
                error.value = data.message || 'Failed to create account';
           } else {
                success.value = true;
                username.value = '';
                email.value = '';
                password.value = '';
-               console.log('Created account:', data.result);
           }
      } catch (err) {
           error.value = 'Network or server error';
