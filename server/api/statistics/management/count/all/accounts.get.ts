@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
           const result = db_result[0]!.count;
 
-          return { success: true, result };
+          return { state: 'success', data: result };
      } catch (error: any) {
           console.log('Account Count API Error:', error);
      }
