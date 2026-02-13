@@ -7,9 +7,13 @@ export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
      const body = await readBody(event);
 
-     if (!body.id || !body.owner_id || !body.title) {
-          return { success: false, message: 'Missing Fields' };
+     if (!body.owner_id && !body.title && !body.description) {
+          return {
+               success: false,
+               message: 'No updated fields',
+          };
      }
+
      if (FullAuthCookieContent === null) {
           // TODO: Add the generalized Error Messages
           return { success: false, message: "User isn't logged in" };
