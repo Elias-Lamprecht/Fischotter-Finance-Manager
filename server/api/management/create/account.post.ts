@@ -1,23 +1,22 @@
 import { getFullAuthCookieContent } from '../../../utils/getFullAuthCookieContent';
 import { db } from '../../../database/client';
 import { account } from '../../../database/schema/account';
+import { ERRORS } from '~~/server/utils/errors';
 
 export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
      const body = await readBody(event);
 
-     if (!body.owner_id || !body.title) {
-          return { success: false, message: 'Missing Owner ID or Title' };
+     if (!body.id || !body.title) {
+          return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
      }
 
      if (FullAuthCookieContent === null) {
-          // TODO: Add the generalized Error Messages
-          return { success: false, message: "User isn't logged in" };
+          return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
      }
 
      if (FullAuthCookieContent.role !== 'admin') {
-          // TODO: Add the generalized Error Messages
-          return { success: false, message: "User isn't a adminstrator" };
+          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
      }
 
      try {
@@ -30,9 +29,8 @@ export default defineEventHandler(async (event) => {
                })
                .returning();
 
-          return { success: true, result };
+          return { success: true, data: result };
      } catch (error: any) {
           console.log('Create Account API Error:', error);
-          return { success: false, error: error?.message ?? error };
      }
 });

@@ -2,27 +2,27 @@ import { getFullAuthCookieContent } from '../../../utils/getFullAuthCookieConten
 import { db } from '../../../database/client';
 import { account } from '../../../database/schema/account';
 import { eq } from 'drizzle-orm';
+import { ERRORS } from '~~/server/utils/errors';
 
 export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
      const body = await readBody(event);
 
-     if (!body.owner_id && !body.title && !body.description) {
+     if (!body.username && !body.displayname && !body.role && !body.email) {
           return {
-               success: false,
-               message: 'No updated fields',
+               state: 'error',
+               message: ERRORS.UPDATE.NO_CHANGES_DETECTED,
           };
      }
 
      if (FullAuthCookieContent === null) {
-          // TODO: Add the generalized Error Messages
-          return { success: false, message: "User isn't logged in" };
+          return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
      }
 
-     // TODO: Add the generalized Error Messages
      if (FullAuthCookieContent.role !== 'admin') {
-          return { success: false, message: "User isn't a adminstrator" };
+          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
      }
+
      try {
           await db
                .update(account)
@@ -33,9 +33,8 @@ export default defineEventHandler(async (event) => {
                })
                .where(eq(account.id, body.id));
 
-          return { success: true };
+          return { state: 'success' };
      } catch (error: any) {
           console.log('Account Modify API Error:', error);
-          return { success: false, error: error?.message ?? error };
      }
 });
