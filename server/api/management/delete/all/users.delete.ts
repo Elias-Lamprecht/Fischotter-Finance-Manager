@@ -1,24 +1,23 @@
 import { getFullAuthCookieContent } from '../../../../utils/getFullAuthCookieContent';
 import { db } from '../../../../database/client';
 import { user } from '../../../../database/schema/user';
+import { ERRORS } from '~~/server/utils/errors';
 
 export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
 
-     // TODO: Add the generalized Error Messages
      if (FullAuthCookieContent === null) {
-          return { success: false, message: "User isn't logged in" };
+          return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
      }
 
-     // TODO: Add the generalized Error Messages
      if (FullAuthCookieContent.role !== 'admin') {
-          return { success: false, message: "User isn't a adminstrator" };
+          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
      }
+
      try {
           await db.delete(user);
-          return { success: true };
+          return { state: 'success' };
      } catch (error: any) {
-          console.log('Register API Error:', error);
-          return { success: false, error: error?.message ?? error };
+          console.log('Delete All User API Error:', error);
      }
 });
