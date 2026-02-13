@@ -2,6 +2,7 @@ import { getFullAuthCookieContent } from '../../../utils/getFullAuthCookieConten
 import { db } from '../../../database/client';
 import { user } from '../../../database/schema/user';
 import { eq } from 'drizzle-orm';
+import { ERRORS } from '~~/server/utils/errors';
 
 export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
@@ -9,20 +10,19 @@ export default defineEventHandler(async (event) => {
 
      if (!body.username && !body.displayname && !body.role && !body.email) {
           return {
-               success: false,
-               message: 'No updated fields',
+               state: 'error',
+               message: ERRORS.UPDATE.NO_CHANGES_DETECTED,
           };
      }
 
      if (FullAuthCookieContent === null) {
-          // TODO: Add the generalized Error Messages
-          return { success: false, message: "User isn't logged in" };
+          return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
      }
 
-     // TODO: Add the generalized Error Messages
      if (FullAuthCookieContent.role !== 'admin') {
-          return { success: false, message: "User isn't a adminstrator" };
+          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
      }
+
      try {
           await db
                .update(user)
@@ -35,9 +35,8 @@ export default defineEventHandler(async (event) => {
                })
                .where(eq(user.id, body.id));
 
-          return { success: true };
+          return { state: 'success' };
      } catch (error: any) {
           console.log('Register API Error:', error);
-          return { success: false, error: error?.message ?? error };
      }
 });
