@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
                })
                .returning();
 
-          return { success: true, data: result };
+          return { state: 'success', data: result };
      } catch (error: any) {
           console.log('Create Account API Error:', error);
      }

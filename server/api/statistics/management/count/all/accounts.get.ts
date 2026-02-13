@@ -5,15 +5,15 @@ import { count } from 'drizzle-orm';
 
 export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
-     // TODO: Add the generalized Error Messages
+
      if (FullAuthCookieContent === null) {
-          return { success: false, message: "User isn't logged in" };
+          return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
      }
 
-     // TODO: Add the generalized Error Messages
      if (FullAuthCookieContent.role !== 'admin') {
-          return { success: false, message: "User isn't a adminstrator" };
+          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
      }
+
      try {
           const db_result = await db.select({ count: count() }).from(account);
 
@@ -22,6 +22,5 @@ export default defineEventHandler(async (event) => {
           return { success: true, result };
      } catch (error: any) {
           console.log('Account Count API Error:', error);
-          return { success: false, error: error?.message ?? error };
      }
 });
