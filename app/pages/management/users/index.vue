@@ -83,12 +83,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { ERRORS } from '~~/server/utils/errors';
 
 const users = ref([]);
 const UserCount = ref(0);
+
 const username = ref('');
 const email = ref('');
 const password = ref('');
+
 const error = ref('');
 
 const loading_new_user = ref(false);
@@ -97,76 +100,60 @@ const loading_delete_all_users = ref(false);
 
 // fetch users when component mounts
 onMounted(async () => {
-     await FetchAllUsers();
-     await FetchUserCount();
+     await Promise.all([FetchAllUsers(), FetchUserCount()]);
 });
 
 async function FetchAllUsers() {
      try {
-          const response = await fetch('http://localhost:3000/api/management/get/all/users', {
+          const response = await $fetch('/api/management/get/all/users', {
                method: 'GET',
-               headers: { 'Content-Type': 'application/json' },
           });
 
-          const data = await response.json();
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to load data.';
+          if (response.state === 'success') {
+               users.value = response.data || [];
           } else {
-               users.value = data.safeResult || [];
+               error.value = response.message || 'Failed to load data.';
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      }
 }
 
 async function FetchUserCount() {
      try {
-          const response = await fetch(
-               'http://localhost:3000/api/statistics/management/count/all/users',
-               {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-               },
-          );
+          const response = await $fetch('/api/statistics/management/count/all/users', {
+               method: 'GET',
+          });
 
-          const data = await response.json();
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to load data.';
+          if (response.state === 'success') {
+               UserCount.value = response.data || 0;
           } else {
-               UserCount.value = data.result || 0;
+               error.value = response.message || 'Failed to load data.';
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      }
 }
 
 async function UpdateUser(user) {
      try {
-          const response = await fetch('http://localhost:3000/api/management/modify/user', {
+          const response = await $fetch('/api/management/modify/user', {
                method: 'POST',
-               headers: { 'Content-Type': 'application/json' },
-               body: JSON.stringify({
+               body: {
                     id: user.id,
                     username: user.username,
                     displayname: user.displayname,
                     email: user.email,
                     role: user.role,
                     status: user.status,
-               }),
+               },
           });
 
-          const data = await response.json();
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to update user';
+          if (!response.state === 'success') {
+               error.value = response.message || 'Failed to update user';
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           await FetchAllUsers();
      }
@@ -177,21 +164,15 @@ async function DeleteAllUsers() {
      error.value = '';
 
      try {
-          const response = await fetch('http://localhost:3000/api/management/delete/all/users', {
+          const response = await $fetch('/api/management/delete/all/users', {
                method: 'DELETE',
-               headers: {
-                    'Content-Type': 'application/json',
-               },
           });
 
-          const data = await response.json();
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to delete.';
+          if (!response.state === 'success') {
+               error.value = response.message || 'Failed to delete.';
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           loading_delete_all_users.value = false;
           await Promise.all([FetchAllUsers(), FetchUserCount()]);
@@ -201,24 +182,19 @@ async function DeleteAllUsers() {
 async function DeleteUser(id) {
      loading_delete_user.value = true;
      try {
-          const response = await fetch('http://localhost:3000/api/management/delete/by-id/user', {
+          const response = await $fetch('/api/management/delete/by-id/user', {
                method: 'DELETE',
-               headers: {
-                    'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({
+
+               body: {
                     id: id,
-               }),
+               },
           });
 
-          const data = await response.json();
-
-          if (!data.success) {
-               error.value = data.message || 'Failed to create account';
+          if (!response.state === 'success') {
+               error.value = response.message || 'Failed to create account';
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           loading_delete_user.value = false;
           await Promise.all([FetchAllUsers(), FetchUserCount()]);
@@ -228,21 +204,16 @@ async function DeleteUser(id) {
 async function CreateNewUser() {
      loading_new_user.value = true;
      try {
-          const response = await fetch('http://localhost:3000/api/public/register', {
+          const response = await $fetch('/api/public/register', {
                method: 'POST',
-               headers: {
-                    'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({
+               body: {
                     username: username.value,
                     email: email.value,
                     password: password.value,
-               }),
+               },
           });
 
-          const data = await response.json();
-
-          if (!data.success) {
+          if (!response.state === 'success') {
                error.value = data.message || 'Failed to create account';
           } else {
                username.value = '';
@@ -251,8 +222,7 @@ async function CreateNewUser() {
                console.log('Created account:', data.result);
           }
      } catch (err) {
-          error.value = 'Network or server error';
-          console.error(err);
+          error.value = ERRORS.GENERAL.ERROR;
      } finally {
           loading_new_user.value = false;
           await Promise.all([FetchAllUsers(), FetchUserCount()]);
