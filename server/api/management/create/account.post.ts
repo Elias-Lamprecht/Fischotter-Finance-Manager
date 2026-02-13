@@ -15,18 +15,12 @@ export default defineEventHandler(async (event) => {
           return { success: false, message: "User isn't logged in" };
      }
 
-     try {
-          // Check if User is not a Admin and tried to create it for another User
-          if (
-               FullAuthCookieContent.role !== 'admin' &&
-               FullAuthCookieContent.id !== body.owner_id
-          ) {
-               return {
-                    success: false,
-                    message: 'User tried to create a Account for another User without needed Permissions',
-               };
-          }
+     if (FullAuthCookieContent.role !== 'admin') {
+          // TODO: Add the generalized Error Messages
+          return { success: false, message: "User isn't a adminstrator" };
+     }
 
+     try {
           const result = await db
                .insert(account)
                .values({
@@ -38,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
           return { success: true, result };
      } catch (error: any) {
-          console.log('Register API Error:', error);
+          console.log('Create Account API Error:', error);
           return { success: false, error: error?.message ?? error };
      }
 });
