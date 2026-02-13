@@ -37,6 +37,6 @@ export default defineEventHandler(async (event) => {
 
           return { state: 'success' };
      } catch (error: any) {
-          console.log('Register API Error:', error);
+          console.log('User Modify API Error:', error);
      }
 });
