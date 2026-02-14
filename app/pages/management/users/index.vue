@@ -107,30 +107,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { ERRORS } from '~~/server/utils/errors';
-
-interface User {
-     id: string;
-     username: string;
-     email?: string;
-     displayname?: string;
-     role: 'user' | 'admin';
-     status: 'active' | 'disabled';
-     created_at: string;
-}
-
-interface Account {
-     id: string;
-     owner_id: string;
-     title: string;
-     description?: string;
-     created_at: string;
-}
-
-interface ApiResponse<T = any> {
-     state: 'success' | 'error' | 'denied';
-     data?: T;
-     message?: string;
-}
+import type { ApiResponse } from '@/types/API'
+import type { User } from '@/types/User'
+import type { Account } from '@/types/Account'
 
 const users = ref<User[]>([]);
 const UserCount = ref<number>(0);
