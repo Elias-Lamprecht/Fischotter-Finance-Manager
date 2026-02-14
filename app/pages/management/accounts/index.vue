@@ -66,15 +66,18 @@
           <br />
      </ul>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ERRORS } from '~~/server/utils/errors';
+import type { Account } from '@/types/Account';
+import type { ApiResponse } from '@/types/API';
 
-const owner_id = ref('751e3176-9243-4fdd-b0fc-527463562278');
+const accounts = ref<Account[]>([]);
+const AccountsCount = ref<number>(0);
+
+const owner_id = ref('');
 const title = ref('');
 const description = ref('');
 
-const AccountsCount = ref();
-const accounts = ref([]);
 const error = ref('');
 
 const loading_new_account = ref(false);
@@ -84,49 +87,50 @@ onMounted(async () => {
      await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
 });
 
-async function DeleteAllAccounts() {
-     loading_delete_all_accounts.value = true;
-     error.value = '';
-
+async function FetchAllAccounts() {
      try {
-          const response = await $fetch('/api/management/delete/all/accounts', {
-               method: 'DELETE',
-          });
+          const response = await $fetch<ApiResponse<Account[]>>(
+               '/api/management/get/all/accounts',
+               {
+                    method: 'GET',
+               },
+          );
 
-          if (!response.state === 'success') {
+          if (response.state === 'success') {
+               accounts.value = response.data || [];
+          } else {
                error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          loading_delete_all_accounts.value = false;
-          await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
      }
 }
 
-async function DeleteAccount(id) {
+async function FetchAccountCount() {
      try {
-          const response = await $fetch('/api/management/delete/by-id/account', {
-               method: 'DELETE',
-               body: {
-                    id: id,
+          const response = await $fetch<ApiResponse<number>>(
+               '/api/statistics/management/count/all/accounts',
+               {
+                    method: 'GET',
                },
-          });
+          );
 
-          if (!response.state === 'success') {
+          if (response.state == 'success') {
+               AccountsCount.value = response.data || 0;
+          } else {
                error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
      }
 }
 
 async function CreateNewAccount() {
      loading_new_account.value = true;
+     error.value = '';
+
      try {
-          const response = await $fetch('/api/management/create/account', {
+          const response = await $fetch<ApiResponse>('/api/management/create/account', {
                method: 'POST',
                body: {
                     owner_id: owner_id.value,
@@ -150,9 +154,9 @@ async function CreateNewAccount() {
      }
 }
 
-async function UpdateAccount(account) {
+async function UpdateAccount(account: Account) {
      try {
-          const response = await $fetch('/api/management/modify/account', {
+          const response = await $fetch<ApiResponse>('/api/management/modify/account', {
                method: 'POST',
                body: {
                     id: account.id,
@@ -162,7 +166,7 @@ async function UpdateAccount(account) {
                },
           });
 
-          if (!response.state === 'success') {
+          if (response.state !== 'success') {
                error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
@@ -172,36 +176,40 @@ async function UpdateAccount(account) {
      }
 }
 
-async function FetchAllAccounts() {
+async function DeleteAccount(id: string) {
      try {
-          const response = await $fetch('/api/management/get/all/accounts', {
-               method: 'GET',
+          const response = await $fetch<ApiResponse>('/api/management/delete/by-id/account', {
+               method: 'DELETE',
+               body: { id: id },
           });
 
-          if (response.state === 'success') {
-               accounts.value = response.data || [];
-          } else {
+          if (response.state !== 'success') {
                error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
+     } finally {
+          await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
      }
 }
 
-async function FetchAccountCount() {
+async function DeleteAllAccounts() {
+     loading_delete_all_accounts.value = true;
+     error.value = '';
+
      try {
-          const response = await $fetch('/api/statistics/management/count/all/accounts', {
-               method: 'GET',
+          const response = await $fetch<ApiResponse>('/api/management/delete/all/accounts', {
+               method: 'DELETE',
           });
 
-          if (!response.state === 'success') {
-               error.value = response.message || 'Failed to load data.';
-          } else {
-               AccountsCount.value = response.data || 0;
+          if (response.state !== 'success') {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
-          console.error(err);
+     } finally {
+          loading_delete_all_accounts.value = false;
+          await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
      }
 }
 </script>
