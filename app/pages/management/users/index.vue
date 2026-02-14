@@ -107,9 +107,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { ERRORS } from '~~/server/utils/errors';
-import type { ApiResponse } from '@/types/API'
-import type { User } from '@/types/User'
-import type { Account } from '@/types/Account'
+import type { ApiResponse } from '@/types/API';
+import type { User } from '@/types/User';
+import type { Account } from '@/types/Account';
 
 const users = ref<User[]>([]);
 const UserCount = ref<number>(0);
@@ -157,7 +157,7 @@ async function FetchUserCount() {
           if (response.state === 'success') {
                UserCount.value = response.data || 0;
           } else {
-               error.value = response.message || 'Failed to load data.';
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
@@ -205,7 +205,6 @@ async function CreateNewUser() {
                username.value = '';
                email.value = '';
                password.value = '';
-               await Promise.all([FetchAllUsers(), FetchUserCount()]);
           } else {
                error.value = response.message || ERRORS.GENERAL.ERROR;
           }
@@ -230,8 +229,10 @@ async function UpdateUser(user: User) {
                     status: user.status,
                 },
           });
-          if (response.state !== 'success')
+
+          if (response.state !== 'success') {
                error.value = response.message || ERRORS.GENERAL.ERROR;
+          }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
      } finally {
@@ -261,10 +262,12 @@ async function DeleteUser(id: string) {
 async function DeleteAllUsers() {
      loading_delete_all_users.value = true;
      error.value = '';
+
      try {
           const response = await $fetch<ApiResponse>('/api/management/delete/all/users', {
                method: 'DELETE',
           });
+
           if (response.state !== 'success') {
                error.value = response.message || ERRORS.GENERAL.ERROR;
 
