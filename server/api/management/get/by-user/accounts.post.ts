@@ -23,8 +23,6 @@ export default defineEventHandler(async (event) => {
      try {
           const result = await db.select().from(account).where(eq(account.owner_id, body.id));
 
-          console.log(result);
-
           return { state: 'success', data: result };
      } catch (error: any) {
           console.log('Get by User Accounts API Error:', error);

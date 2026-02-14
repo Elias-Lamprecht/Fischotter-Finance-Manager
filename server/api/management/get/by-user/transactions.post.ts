@@ -26,8 +26,6 @@ export default defineEventHandler(async (event) => {
                .from(transaction)
                .where(eq(transaction.owner_id, body.id));
 
-          console.log(result);
-
           return { state: 'success', data: result };
      } catch (error: any) {
           console.log('Get by User Transactions API Error:', error);
