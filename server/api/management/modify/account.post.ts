@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
      const body = await readBody(event);
 
-     if (!body.username && !body.displayname && !body.role && !body.email) {
+     if (!body.owner_id! && body.title && !body.description) {
           return {
                state: 'error',
                message: ERRORS.UPDATE.NO_CHANGES_DETECTED,

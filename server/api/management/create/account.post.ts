@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
      const FullAuthCookieContent = getFullAuthCookieContent(event);
      const body = await readBody(event);
 
-     if (!body.id || !body.title) {
+     if (!body.owner_id || !body.title) {
           return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
      }
 
