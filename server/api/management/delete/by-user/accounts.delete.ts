@@ -24,6 +24,6 @@ export default defineEventHandler(async (event) => {
           await db.delete(account).where(eq(body.owner_id, account.owner_id));
           return { state: 'success' };
      } catch (error: any) {
-          console.log('Delete by User Transaction API Error:', error);
+          console.log('Delete by User Account API Error:', error);
      }
 });
