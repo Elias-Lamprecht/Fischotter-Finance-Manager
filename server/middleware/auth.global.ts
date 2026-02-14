@@ -8,21 +8,12 @@ export default defineEventHandler(async (event) => {
 
      const publicPages = ['/public/login', '/public/register'];
 
-     // Protect API routes
-     if (url.startsWith('/api') && !url.startsWith('/api/public')) {
-          if (!auth) {
-               return { state: 'denied', reason: ERRORS.AUTH.NOT_LOGGED_IN };
-          }
-
-          if (url.startsWith('/api/management') && auth.role !== 'admin') {
-               return { state: 'denied', reason: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
-          }
-
+     if (url.startsWith('/api')) {
           return;
      }
 
-     // Redirect root → /home
      if (url === '/') {
+          // Redirect root → /home
           return sendRedirect(event, '/home');
      }
 
