@@ -13,12 +13,12 @@
           </div>
 
           <div>
-               <label for="email">email:</label>
+               <label for="email">Email:</label>
                <input v-model="email" id="email" type="text" />
           </div>
 
           <div>
-               <label for="password">password:</label>
+               <label for="password">Password:</label>
                <input v-model="password" id="password" type="text" required />
           </div>
           <br />
@@ -48,12 +48,36 @@
                     <option value="admin">admin</option>
                </select>
           </li>
+
           <li>
                Status:
                <select v-model="user.status">
                     <option value="active">active</option>
                     <option value="disabled">disabled</option>
                </select>
+          </li>
+
+          <li>
+               <button @click="selectUser(user)">Load Accounts</button>
+          </li>
+
+          <li v-if="selectedUserId === user.id">
+               <p v-if="loadingUserData">Loading details...</p>
+               <div v-else>
+                    <p v-for="account in selectedUserData" :key="account.id" >
+                         <ul>ID: {{ account.id }}</ul>
+                         <ul>Title: {{ account.title }}</ul>
+                         <ul>Description: {{ account.description }}</ul>
+                         <ul>Created at: {{ new Date(account.created_at).toLocaleString('en-UK', {
+                         year: 'numeric',
+                         month: 'long',
+                         day: 'numeric',
+                         hour: '2-digit',
+                         minute: '2-digit',
+                    }) }}
+                         </ul>
+                    </p>
+               </div>
           </li>
 
           <li>
@@ -76,21 +100,48 @@
           <li>
                <button @click="UpdateUser(user)">Update User</button>
           </li>
-
           <br />
      </ul>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { ERRORS } from '~~/server/utils/errors';
 
-const users = ref([]);
-const UserCount = ref(0);
+interface User {
+     id: string;
+     username: string;
+     email?: string;
+     displayname?: string;
+     role: 'user' | 'admin';
+     status: 'active' | 'disabled';
+     created_at: string;
+}
+
+interface Account {
+     id: string;
+     owner_id: string;
+     title: string;
+     description?: string;
+     created_at: string;
+}
+
+interface ApiResponse<T = any> {
+     state: 'success' | 'error' | 'denied';
+     data?: T;
+     message?: string;
+}
+
+const users = ref<User[]>([]);
+const UserCount = ref<number>(0);
 
 const username = ref('');
 const email = ref('');
 const password = ref('');
+
+const selectedUserId = ref<string | null>(null);
+const selectedUserData = ref<Account[]>([]);
+const loadingUserData = ref(false);
 
 const error = ref('');
 
@@ -98,21 +149,20 @@ const loading_new_user = ref(false);
 const loading_delete_user = ref(false);
 const loading_delete_all_users = ref(false);
 
-// fetch users when component mounts
 onMounted(async () => {
      await Promise.all([FetchAllUsers(), FetchUserCount()]);
 });
 
 async function FetchAllUsers() {
      try {
-          const response = await $fetch('/api/management/get/all/users', {
+          const response = await $fetch<ApiResponse<User[]>>('/api/management/get/all/users', {
                method: 'GET',
           });
 
           if (response.state === 'success') {
                users.value = response.data || [];
           } else {
-               error.value = response.message || 'Failed to load data.';
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
@@ -121,10 +171,10 @@ async function FetchAllUsers() {
 
 async function FetchUserCount() {
      try {
-          const response = await $fetch('/api/statistics/management/count/all/users', {
-               method: 'GET',
-          });
-
+          const response = await $fetch<ApiResponse<number>>(
+               '/api/statistics/management/count/all/users',
+               { method: 'GET' },
+          );
           if (response.state === 'success') {
                UserCount.value = response.data || 0;
           } else {
@@ -135,9 +185,62 @@ async function FetchUserCount() {
      }
 }
 
-async function UpdateUser(user) {
+async function selectUser(user: User) {
+     selectedUserId.value = user.id;
+     selectedUserData.value = [];
+     error.value = '';
+     loadingUserData.value = true;
+
      try {
-          const response = await $fetch('/api/management/modify/user', {
+          const response = await $fetch<ApiResponse<Account[]>>(
+               '/api/management/get/by-user/accounts',
+               {
+                    method: 'POST',
+                    body: { id: user.id },
+               },
+          );
+
+          if (response.state === 'success') {
+               selectedUserData.value = response.data || [];
+          } else {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
+          }
+     } catch (err) {
+          error.value = ERRORS.GENERAL.ERROR;
+     } finally {
+          loadingUserData.value = false;
+     }
+}
+
+async function CreateNewUser() {
+     loading_new_user.value = true;
+     error.value = '';
+
+     try {
+          const response = await $fetch<ApiResponse>('/api/public/register', {
+               method: 'POST',
+               body: { username: username.value, email: email.value, password: password.value },
+          });
+
+          if (response.state === 'success') {
+               username.value = '';
+               email.value = '';
+               password.value = '';
+               await Promise.all([FetchAllUsers(), FetchUserCount()]);
+          } else {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
+          }
+     } catch (err) {
+          error.value = ERRORS.GENERAL.ERROR;
+     } finally {
+          loading_new_user.value = false;
+          await Promise.all([FetchAllUsers(), FetchUserCount()]);
+     }
+}
+
+async function UpdateUser(user: User) {
+     try {
+          const response = await $fetch<ApiResponse>('/api/management/modify/user', {
                method: 'POST',
                body: {
                     id: user.id,
@@ -146,12 +249,10 @@ async function UpdateUser(user) {
                     email: user.email,
                     role: user.role,
                     status: user.status,
-               },
+                },
           });
-
-          if (!response.state === 'success') {
-               error.value = response.message || 'Failed to update user';
-          }
+          if (response.state !== 'success')
+               error.value = response.message || ERRORS.GENERAL.ERROR;
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
      } finally {
@@ -159,39 +260,16 @@ async function UpdateUser(user) {
      }
 }
 
-async function DeleteAllUsers() {
-     loading_delete_all_users.value = true;
-     error.value = '';
-
-     try {
-          const response = await $fetch('/api/management/delete/all/users', {
-               method: 'DELETE',
-          });
-
-          if (!response.state === 'success') {
-               error.value = response.message || 'Failed to delete.';
-          }
-     } catch (err) {
-          error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          loading_delete_all_users.value = false;
-          await Promise.all([FetchAllUsers(), FetchUserCount()]);
-     }
-}
-
-async function DeleteUser(id) {
+async function DeleteUser(id: string) {
      loading_delete_user.value = true;
      try {
-          const response = await $fetch('/api/management/delete/by-id/user', {
+          const response = await $fetch<ApiResponse>('/api/management/delete/by-id/user', {
                method: 'DELETE',
-
-               body: {
-                    id: id,
-               },
+               body: { id: id },
           });
 
-          if (!response.state === 'success') {
-               error.value = response.message || 'Failed to create account';
+          if (response.state !== 'success') {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
@@ -201,30 +279,21 @@ async function DeleteUser(id) {
      }
 }
 
-async function CreateNewUser() {
-     loading_new_user.value = true;
+async function DeleteAllUsers() {
+     loading_delete_all_users.value = true;
+     error.value = '';
      try {
-          const response = await $fetch('/api/public/register', {
-               method: 'POST',
-               body: {
-                    username: username.value,
-                    email: email.value,
-                    password: password.value,
-               },
+          const response = await $fetch<ApiResponse>('/api/management/delete/all/users', {
+               method: 'DELETE',
           });
+          if (response.state !== 'success') {
+               error.value = response.message || ERRORS.GENERAL.ERROR;
 
-          if (!response.state === 'success') {
-               error.value = data.message || 'Failed to create account';
-          } else {
-               username.value = '';
-               email.value = '';
-               password.value = '';
-               console.log('Created account:', data.result);
           }
      } catch (err) {
           error.value = ERRORS.GENERAL.ERROR;
      } finally {
-          loading_new_user.value = false;
+          loading_delete_all_users.value = false;
           await Promise.all([FetchAllUsers(), FetchUserCount()]);
      }
 }
