@@ -6,11 +6,15 @@
 	</form>
 </template>
 <script setup lang="ts">
+import { useConfirm } from '@/composables/useConfirm';
 import type { ApiResponse } from '@/types/API';
 
 // Local state
 const error = ref('');
 const loading = ref(false);
+
+// Confirm Modal
+const { showConfirm } = useConfirm();
 
 // Callback to Parent after deletion
 const emit = defineEmits<{
@@ -21,18 +25,28 @@ async function DeleteAllTransactions() {
 	loading.value = true;
 	error.value = '';
 
-	try {
-		const response = await $fetch<ApiResponse>('/api/management/delete/all/transactions', {
-			method: 'DELETE',
-		});
+	const result = await showConfirm('Are you sure you want to delete all Transactions?');
 
-		if (response.state !== 'success') {
-			error.value = response.message || ERRORS.GENERAL.ERROR;
+	if (result) {
+		try {
+			const response = await $fetch<ApiResponse>(
+				'/api/management/delete/all/transactions',
+				{
+					method: 'DELETE',
+				},
+			);
+
+			if (response.state !== 'success') {
+				error.value = response.message || ERRORS.GENERAL.ERROR;
+			}
+		} catch (err) {
+			error.value = ERRORS.GENERAL.ERROR;
+		} finally {
+			emit('deleted_all');
+			loading.value = false;
 		}
-	} catch (err) {
-		error.value = ERRORS.GENERAL.ERROR;
-	} finally {
-		emit('deleted_all');
+	} else {
+		loading.value = false;
 	}
 }
 </script>
