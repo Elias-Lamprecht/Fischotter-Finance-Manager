@@ -44,7 +44,7 @@
 </template>
 <script setup lang="ts">
 import type { ApiResponse } from '@/types/API';
-import { ERRORS } from '~~/server/utils/errors';
+import { ERRORS } from '#shared/utils/Errors';
 
 // Form state
 const owner_id = ref('');

@@ -101,7 +101,7 @@ import DeleteAllTransactionsForm from '@/components/management/transactions/Dele
 // TYPES & ERROR LIST
 import type { ApiResponse } from '@/types/API';
 import type { Transaction } from '@/types/Transaction';
-import { ERRORS } from '~~/server/utils/errors';
+import { ERRORS } from '#shared/utils/Errors';
 
 const SelectedTransactions = ref([]);
 

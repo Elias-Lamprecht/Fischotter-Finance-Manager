@@ -1,32 +1,32 @@
 import { getFullAuthCookieContent } from '../../../utils/getFullAuthCookieContent';
 import { db } from '../../../database/client';
 import { account } from '../../../database/schema/account';
-import { ERRORS } from '~~/server/utils/errors';
+import { ERRORS } from '#shared/utils/Errors';
 
 export default defineEventHandler(async (event) => {
-     const FullAuthCookieContent = getFullAuthCookieContent(event);
-     const body = await readBody(event);
+	const FullAuthCookieContent = getFullAuthCookieContent(event);
+	const body = await readBody(event);
 
-     if (!body.title) {
-          return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
-     }
+	if (!body.title) {
+		return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
+	}
 
-     if (FullAuthCookieContent === null) {
-          return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
-     }
+	if (FullAuthCookieContent === null) {
+		return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
+	}
 
-     try {
-          const result = await db
-               .insert(account)
-               .values({
-                    owner_id: FullAuthCookieContent.id,
-                    title: body.title,
-                    description: body.description,
-               })
-               .returning();
+	try {
+		const result = await db
+			.insert(account)
+			.values({
+				owner_id: FullAuthCookieContent.id,
+				title: body.title,
+				description: body.description,
+			})
+			.returning();
 
-          return { state: 'success', data: result };
-     } catch (error: any) {
-          console.log('Create Account API Error:', error);
-     }
+		return { state: 'success', data: result };
+	} catch (error: any) {
+		console.log('Create Account API Error:', error);
+	}
 });

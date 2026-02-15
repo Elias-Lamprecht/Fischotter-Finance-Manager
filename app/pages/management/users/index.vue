@@ -106,7 +106,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { ERRORS } from '~~/server/utils/errors';
+import { ERRORS } from '#shared/utils/Errors';
 import type { ApiResponse } from '@/types/API';
 import type { User } from '@/types/User';
 import type { Account } from '@/types/Account';

@@ -2,28 +2,28 @@ import { getFullAuthCookieContent } from '../../../../utils/getFullAuthCookieCon
 import { db } from '../../../../database/client';
 import { user } from '../../../../database/schema/user';
 import { eq } from 'drizzle-orm';
-import { ERRORS } from '~~/server/utils/errors';
+import { ERRORS } from '#shared/utils/Errors';
 
 export default defineEventHandler(async (event) => {
-     const FullAuthCookieContent = getFullAuthCookieContent(event);
-     const body = await readBody(event);
+	const FullAuthCookieContent = getFullAuthCookieContent(event);
+	const body = await readBody(event);
 
-     if (!body.id) {
-          return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
-     }
+	if (!body.id) {
+		return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
+	}
 
-     if (FullAuthCookieContent === null) {
-          return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
-     }
+	if (FullAuthCookieContent === null) {
+		return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
+	}
 
-     if (FullAuthCookieContent.role !== 'admin') {
-          return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
-     }
+	if (FullAuthCookieContent.role !== 'admin') {
+		return { state: 'denied', message: ERRORS.AUTH.INSUFFICIENT_PERMISSIONS };
+	}
 
-     try {
-          await db.delete(user).where(eq(body.id, user.id));
-          return { state: 'success' };
-     } catch (error: any) {
-          console.log('Delete by ID User API Error:', error);
-     }
+	try {
+		await db.delete(user).where(eq(body.id, user.id));
+		return { state: 'success' };
+	} catch (error: any) {
+		console.log('Delete by ID User API Error:', error);
+	}
 });

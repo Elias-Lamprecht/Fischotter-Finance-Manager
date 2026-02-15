@@ -8,6 +8,7 @@
 <script setup lang="ts">
 import { useConfirm } from '@/composables/useConfirm';
 import type { ApiResponse } from '@/types/API';
+import { ERRORS } from '#shared/utils/Errors';
 
 // Local state
 const error = ref('');
