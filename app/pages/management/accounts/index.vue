@@ -2,9 +2,16 @@
 	<DeleteAllAccountsForm />
 	<CreateNewAccountForm />
 
-	<p>Accounts Count: {{ TotalAccounts }}</p>
+	<form @submit.prevent="DeleteSelectedAccounts(SelectedAccounts)">
+		<button type="submit">Delete Selected Accounts</button>
+	</form>
 
-	<ul v-for="account in accounts" :key="account.id">
+	<p>Total Accounts: {{ TotalAccounts }}</p>
+	<p>Selected Accounts: {{ SelectedAccounts.length }}</p>
+
+	<ul v-for="account in accounts" :key="account.id" style="display: flex; flex-direction: row">
+		<li><input type="checkbox" :value="account.id" v-model="SelectedAccounts" /></li>
+
 		<li>ID: <input type="text" :value="account.id" disabled /></li>
 
 		<li>Owner ID: <input type="text" v-model="account.owner_id" /></li>
@@ -47,6 +54,7 @@ import CreateNewAccountForm from '@/components/management/accounts/CreateNewAcco
 import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
 import { useUpdateAccount } from '@/composables/Accounts/useUpdateAccount';
 import { useDeleteAccount } from '~/composables/Accounts/useDeleteAccount';
+import { useDeleteSelectedAccounts } from '~/composables/Accounts/useDeleteSelectedAccounts';
 
 const {
 	accounts,
@@ -56,6 +64,12 @@ const {
 	page,
 	FetchAllAccounts,
 } = useFetchAllAccounts();
+
+const {
+	error: deleteSelectedError,
+	SelectedAccounts,
+	DeleteSelectedAccounts,
+} = useDeleteSelectedAccounts();
 
 const { error: DeleteError, DeleteAccount } = useDeleteAccount();
 
