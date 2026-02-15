@@ -92,19 +92,15 @@
 import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions'
 import { useDeleteTransaction } from '@/composables/Transactions/useDeleteTransaction';
 import { useUpdateTransaction } from '@/composables/Transactions/useUpdateTransaction';
+import { useDeleteSelectedTransactions } from '@/composables/Transactions/useDeleteSelectedTransactions'
 
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue'
 import DeleteAllTransactionsForm from '@/components/management/transactions/DeleteAllTransactionsForm.vue';
 
 // TYPES & ERROR LIST
-import type { ApiResponse } from '@/types/API';
-import type { Transaction } from '@/types/Transaction';
 import { ERRORS } from '#shared/utils/Errors';
 
-const SelectedTransactions = ref([]);
-
-// FetchAllTransactions
 const {
      transactions,
      TotalTransactions,
@@ -124,6 +120,11 @@ const {
      UpdateTransaction
 } = useUpdateTransaction()
 
+const {
+     error: deleteSelectedTransactions,
+     SelectedTransactions,
+     DeleteSelectedTransactions
+} = useDeleteSelectedTransactions()
 
 const pageInput = ref(1);
 
@@ -151,75 +152,5 @@ async function GoToPage() {
 
      page.value = pageInput.value;
      await FetchAllTransactions();
-}
-
-async function UpdateTransaction(transaction: Transaction) {
-     try {
-          const response = await $fetch<ApiResponse>('/api/management/modify/transaction', {
-               method: 'POST',
-               body: {
-                    id: transaction.id,
-                    account_id: transaction.account_id,
-                    owner_id: transaction.owner_id,
-                    title: transaction.title,
-                    description: transaction.description,
-                    type: transaction.type,
-                    price: transaction.price,
-               },
-          });
-
-          if (response.state !== 'success') {
-               error.value = response.message || ERRORS.GENERAL.ERROR;
-          }
-     } catch (err) {
-          error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          await FetchAllTransactions();
-     }
-}
-
-async function DeleteTransaction(id: string) {
-     try {
-          const response = await $fetch<ApiResponse>('/api/management/delete/by-id/transaction', {
-               method: 'DELETE',
-               body: {
-                    id: id,
-               },
-          });
-
-          if (response.state !== 'success') {
-               error.value = response.message || ERRORS.GENERAL.ERROR;
-          }
-     } catch (err) {
-          error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          await FetchAllTransactions();
-     }
-}
-
-async function DeleteSelectedTransactions(TransactionArray: any) {
-     const result = await showConfirm('Are you sure you want to delete the selected Transactions?');
-
-     if (result) {
-          try {
-          const response = await $fetch<ApiResponse>('/api/management/delete/many/transactions', {
-               method: 'DELETE',
-               body: {
-                    TransactionArray: TransactionArray
-               },
-          });
-
-          if (response.state === 'success') {
-               SelectedTransactions.value.length = 0;
-          } else {
-               error.value = response.message || ERRORS.GENERAL.ERROR;
-          }
-     } catch (err) {
-          error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          await FetchAllTransactions();
-     }
-     }
-
 }
 </script>
