@@ -127,6 +127,7 @@ onMounted(() => FetchAllTransactions());
 async function NextPage() {
      if (page.value < lastPage.value) {
           page.value++;
+          pageInput.value = page.value;
           await FetchAllTransactions();
      }
 }
@@ -134,6 +135,7 @@ async function NextPage() {
 async function PreviousPage() {
      if (page.value > 1) {
           page.value--;
+          pageInput.value = page.value;
           await FetchAllTransactions();
      }
 }
