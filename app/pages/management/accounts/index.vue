@@ -46,11 +46,7 @@ import CreateNewAccountForm from '@/components/management/accounts/CreateNewAcco
 // COMPOSABLES
 import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
 import { useUpdateAccount } from '@/composables/Accounts/useUpdateAccount';
-
-import { ERRORS } from '#shared/utils/Errors';
-import type { ApiResponse } from '@/types/API';
-
-const error = ref('');
+import { useDeleteAccount } from '~/composables/Accounts/useDeleteAccount';
 
 const {
 	accounts,
@@ -61,26 +57,11 @@ const {
 	FetchAllAccounts,
 } = useFetchAllAccounts();
 
+const { error: DeleteError, DeleteAccount } = useDeleteAccount();
+
 const { error: UpdateError, UpdateAccount } = useUpdateAccount();
 
 onMounted(async () => {
 	FetchAllAccounts();
 });
-
-async function DeleteAccount(id: string) {
-	try {
-		const response = await $fetch<ApiResponse>('/api/management/delete/by-id/account', {
-			method: 'DELETE',
-			body: { id: id },
-		});
-
-		if (response.state !== 'success') {
-			error.value = response.message || ERRORS.GENERAL.ERROR;
-		}
-	} catch (err) {
-		error.value = ERRORS.GENERAL.ERROR;
-	} finally {
-		FetchAllAccounts();
-	}
-}
 </script>
