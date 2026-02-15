@@ -90,6 +90,7 @@
 <script setup lang="ts">
 // COMPOSABLES
 import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions'
+import { useDeleteTransaction } from '@/composables/Transactions/useDeleteTransaction';
 
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue'
@@ -112,9 +113,10 @@ const {
      FetchAllTransactions
 } = useFetchAllTransactions()
 
-
-// Confirm Modal
-const { showConfirm } = useConfirm();
+const {
+     error: deleteTransactionError,
+     DeleteTransaction
+} = useDeleteTransaction()
 
 const pageInput = ref(1);
 
