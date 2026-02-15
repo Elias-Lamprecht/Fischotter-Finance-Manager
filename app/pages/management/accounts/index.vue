@@ -2,7 +2,7 @@
 	<DeleteAllAccountsForm />
 	<CreateNewAccountForm />
 
-	<p>Accounts Count: {{ AccountsCount }}</p>
+	<p>Accounts Count: {{ TotalAccounts }}</p>
 
 	<ul v-for="account in accounts" :key="account.id">
 		<li>ID: <input type="text" :value="account.id" disabled /></li>
@@ -42,59 +42,26 @@
 import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAccountsForm.vue';
 import CreateNewAccountForm from '@/components/management/accounts/CreateNewAccountForm.vue';
 
+import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
+
 import { ERRORS } from '#shared/utils/Errors';
 import type { Account } from '@/types/Account';
 import type { ApiResponse } from '@/types/API';
 
-const accounts = ref<Account[]>([]);
-const AccountsCount = ref<number>(0);
-
 const error = ref('');
 
-const loading_new_account = ref(false);
-const loading_delete_all_accounts = ref(false);
+const {
+	accounts,
+	TotalAccounts,
+	lastPage,
+	error: fetchError,
+	page,
+	FetchAllAccounts,
+} = useFetchAllAccounts();
 
 onMounted(async () => {
-	await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
+	FetchAllAccounts();
 });
-
-async function FetchAllAccounts() {
-	try {
-		const response = await $fetch<ApiResponse<Account[]>>(
-			'/api/management/get/all/accounts',
-			{
-				method: 'GET',
-			},
-		);
-
-		if (response.state === 'success') {
-			accounts.value = response.data || [];
-		} else {
-			error.value = response.message || ERRORS.GENERAL.ERROR;
-		}
-	} catch (err) {
-		error.value = ERRORS.GENERAL.ERROR;
-	}
-}
-
-async function FetchAccountCount() {
-	try {
-		const response = await $fetch<ApiResponse<number>>(
-			'/api/statistics/management/count/all/accounts',
-			{
-				method: 'GET',
-			},
-		);
-
-		if (response.state == 'success') {
-			AccountsCount.value = response.data || 0;
-		} else {
-			error.value = response.message || ERRORS.GENERAL.ERROR;
-		}
-	} catch (err) {
-		error.value = ERRORS.GENERAL.ERROR;
-	}
-}
 
 async function UpdateAccount(account: Account) {
 	try {
@@ -131,7 +98,7 @@ async function DeleteAccount(id: string) {
 	} catch (err) {
 		error.value = ERRORS.GENERAL.ERROR;
 	} finally {
-		await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
+		FetchAllAccounts();
 	}
 }
 </script>
