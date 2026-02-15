@@ -1,30 +1,6 @@
 <template>
 	<DeleteAllAccountsForm />
-
-	<form @submit.prevent="CreateNewAccount()">
-		<br />
-		<div>
-			<label for="owner_id">Owner ID:</label>
-			<input v-model="owner_id" id="owner_id" type="text" required />
-		</div>
-
-		<div>
-			<label for="title">title:</label>
-			<input v-model="title" id="title" type="text" required />
-		</div>
-
-		<div>
-			<label for="description">description:</label>
-			<textarea v-model="description" id="description" type="text"></textarea>
-		</div>
-		<br />
-		<button type="submit" :disabled="loading_new_account">
-			{{ loading_new_account ? 'Creating...' : 'Create new Account' }}
-		</button>
-		<br />
-	</form>
-
-	<p v-if="error" style="color: red">{{ error }}</p>
+	<CreateNewAccountForm />
 
 	<p>Accounts Count: {{ AccountsCount }}</p>
 
@@ -64,6 +40,7 @@
 </template>
 <script setup lang="ts">
 import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAccountsForm.vue';
+import CreateNewAccountForm from '@/components/management/accounts/CreateNewAccountForm.vue';
 
 import { ERRORS } from '#shared/utils/Errors';
 import type { Account } from '@/types/Account';
@@ -71,10 +48,6 @@ import type { ApiResponse } from '@/types/API';
 
 const accounts = ref<Account[]>([]);
 const AccountsCount = ref<number>(0);
-
-const owner_id = ref('');
-const title = ref('');
-const description = ref('');
 
 const error = ref('');
 
@@ -120,35 +93,6 @@ async function FetchAccountCount() {
 		}
 	} catch (err) {
 		error.value = ERRORS.GENERAL.ERROR;
-	}
-}
-
-async function CreateNewAccount() {
-	loading_new_account.value = true;
-	error.value = '';
-
-	try {
-		const response = await $fetch<ApiResponse>('/api/management/create/account', {
-			method: 'POST',
-			body: {
-				owner_id: owner_id.value,
-				title: title.value,
-				description: description.value,
-			},
-		});
-
-		if (response.state === 'success') {
-			owner_id.value = '';
-			title.value = '';
-			description.value = '';
-		} else {
-			error.value = response.message || ERRORS.GENERAL.ERROR;
-		}
-	} catch (err) {
-		error.value = ERRORS.GENERAL.ERROR;
-	} finally {
-		loading_new_account.value = false;
-		await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
 	}
 }
 
