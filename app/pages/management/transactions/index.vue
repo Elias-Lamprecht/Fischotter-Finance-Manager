@@ -103,9 +103,9 @@ import type { ApiResponse } from '@/types/API';
 import type { Transaction } from '@/types/Transaction';
 import { ERRORS } from '~~/server/utils/errors';
 
-
 const SelectedTransactions = ref([]);
 
+// FetchAllTransactions
 const {
      transactions,
      TotalTransactions,
@@ -115,7 +115,8 @@ const {
      FetchAllTransactions
 } = useTransactions()
 
-
+// Confirm Modal
+const { showConfirm } = useConfirm();
 
 const limit = 10;
 const pageInput = ref(1);
@@ -193,6 +194,9 @@ async function DeleteTransaction(id: string) {
 }
 
 async function DeleteSelectedTransactions(TransactionArray: any) {
+     const result = await showConfirm('Are you sure you want to delete the selected Transactions?');
+
+     if (result) {
           try {
           const response = await $fetch<ApiResponse>('/api/management/delete/many/transactions', {
                method: 'DELETE',
@@ -211,5 +215,7 @@ async function DeleteSelectedTransactions(TransactionArray: any) {
      } finally {
           await FetchAllTransactions();
      }
+     }
+
 }
 </script>
