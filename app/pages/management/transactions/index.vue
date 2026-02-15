@@ -91,6 +91,7 @@
 // COMPOSABLES
 import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions'
 import { useDeleteTransaction } from '@/composables/Transactions/useDeleteTransaction';
+import { useUpdateTransaction } from '@/composables/Transactions/useUpdateTransaction';
 
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue'
@@ -117,6 +118,12 @@ const {
      error: deleteTransactionError,
      DeleteTransaction
 } = useDeleteTransaction()
+
+const {
+     error: updateTransactionError,
+     UpdateTransaction
+} = useUpdateTransaction()
+
 
 const pageInput = ref(1);
 
