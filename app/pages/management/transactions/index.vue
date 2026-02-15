@@ -3,9 +3,6 @@
 
      <CreateNewTransactionForm @created="FetchAllTransactions()" />
 
-     <p v-if="error" style="color: red">{{ error }}</p>
-
-
      <form @submit.prevent="DeleteSelectedTransactions(SelectedTransactions)">
           <button type="submit">Delete Selected Transactions</button>
      </form>
@@ -14,7 +11,7 @@
      <p>Selected Transactions: {{ SelectedTransactions.length }}</p>
 
 
-     <ul v-for="transaction in transactions" :key="transaction.id" style="display: flex;flex-direction: row;">
+     <ul v-for="transaction in transactions" :key="transaction.id" style="display: flex; flex-direction: row;">
           <li><input type="checkbox" :value="transaction.id" v-model="SelectedTransactions"></li>
 
           <li>ID: <input type="text" :value="transaction.id" disabled /></li>
@@ -92,7 +89,7 @@
 </template>
 <script setup lang="ts">
 // COMPOSABLES
-import { useTransactions } from '@/composables/Transactions/useFetchAllTransactions'
+import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions'
 
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue'
@@ -110,18 +107,16 @@ const {
      transactions,
      TotalTransactions,
      lastPage,
-     error,
+     error: fetchError,
      page,
      FetchAllTransactions
-} = useTransactions()
+} = useFetchAllTransactions()
+
 
 // Confirm Modal
 const { showConfirm } = useConfirm();
 
-const limit = 10;
 const pageInput = ref(1);
-
-
 
 onMounted(() => FetchAllTransactions());
 

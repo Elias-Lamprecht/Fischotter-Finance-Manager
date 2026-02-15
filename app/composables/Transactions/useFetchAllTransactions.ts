@@ -3,8 +3,9 @@ import type { Transaction } from '@/types/Transaction';
 import type { PaginationApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
 
-export function useTransactions() {
-	const transactions = ref<Transaction[]>([]);
+const transactions = ref<Transaction[]>([]);
+
+export function useFetchAllTransactions() {
 	const TotalTransactions = ref(0);
 	const lastPage = ref(1);
 	const error = ref('');
