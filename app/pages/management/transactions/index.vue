@@ -1,53 +1,10 @@
 <template>
-     <form @submit.prevent="CreateNewTransaction()">
-          <br />
-          <div>
-               <label for="owner_id">Owner ID:</label>
-               <input v-model="owner_id" id="owner_id" type="text" required />
-          </div>
+     <DeleteAllTransactionsForm @deleted_all="FetchAllTransactions()" />
 
-          <div>
-               <label for="account_id">Account ID:</label>
-               <input v-model="account_id" id="account_id" type="text" required />
-          </div>
-
-          <div>
-               <label for="title">title:</label>
-               <input v-model="title" id="title" type="text" required />
-          </div>
-
-          <div>
-               <label for="description">description:</label>
-               <textarea v-model="description" id="description" type="text"></textarea>
-          </div>
-
-          <div>
-               Type:
-               <select v-model="type">
-                    <option value="income">income</option>
-                    <option value="transfer">transfer</option>
-                    <option value="expense">expense</option>
-               </select>
-          </div>
-
-          <div>
-               <label for="price">price:</label>
-               <input v-model="price" id="price" type="number" step="0.01"></input>
-          </div>
-          <br />
-          <button type="submit" :disabled="loading_new_transaction">
-               {{ loading_new_transaction ? 'Creating...' : 'Create new Transaction' }}
-          </button>
-          <br />
-     </form>
+     <CreateNewTransactionForm @created="FetchAllTransactions()" />
 
      <p v-if="error" style="color: red">{{ error }}</p>
 
-     <form @submit.prevent="DeleteAllTransactions()">
-          <button type="submit" :disabled="loading_delete_all_transactions">
-               {{ loading_delete_all_transactions ? 'Deleting...' : 'Delete all Transactions' }}
-          </button>
-     </form>
 
      <form @submit.prevent="DeleteSelectedTransactions(SelectedTransactions)">
           <button type="submit">Delete Selected Transactions</button>
@@ -134,34 +91,38 @@
      </ul>
 </template>
 <script setup lang="ts">
-import { ERRORS } from '~~/server/utils/errors';
-import type { ApiResponse, PaginationApiResponse } from '@/types/API';
-import type { Transaction } from '@/types/Transaction';
+// COMPOSABLES
+import { useTransactions } from '@/composables/Transactions/useFetchAllTransactions'
 
-const transactions = ref<Transaction[]>([]);
-const TotalTransactions = ref<number>();
+// COMPONENTS
+import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue'
+import DeleteAllTransactionsForm from '@/components/management/transactions/DeleteAllTransactionsForm.vue';
+
+// TYPES & ERROR LIST
+import type { ApiResponse } from '@/types/API';
+import type { Transaction } from '@/types/Transaction';
+import { ERRORS } from '~~/server/utils/errors';
+
+
 const SelectedTransactions = ref([]);
 
-const owner_id = ref('');
-const account_id = ref('');
-const title = ref('');
-const description = ref('');
-const type = ref('income');
-const price = ref(0);
+const {
+     transactions,
+     TotalTransactions,
+     lastPage,
+     error,
+     page,
+     FetchAllTransactions
+} = useTransactions()
 
-const page = ref(1);
+
+
 const limit = 10;
-const lastPage = ref(1);
 const pageInput = ref(1);
 
-const error = ref('');
 
-const loading_new_transaction = ref(false);
-const loading_delete_all_transactions = ref(false);
 
-onMounted(async () => {
-     await Promise.all([FetchAllTransactions()]);
-});
+onMounted(() => FetchAllTransactions());
 
 async function NextPage() {
      if (page.value < lastPage.value) {
@@ -183,59 +144,6 @@ async function GoToPage() {
 
      page.value = pageInput.value;
      await FetchAllTransactions();
-}
-
-async function FetchAllTransactions() {
-     try {
-          const response = await $fetch<PaginationApiResponse<Transaction[]>>('/api/management/get/all/transactions', {
-               method: 'POST',
-               body: {
-                    page: page.value,
-                    limit: limit
-               }
-          });
-
-     if (response.state === 'success') {
-          transactions.value = response.data;
-          TotalTransactions.value = response.pagination.total;
-          lastPage.value = response.pagination.lastPage;
-     } else if (response.state === 'denied' || response.state === 'error') {
-          error.value = response.message || ERRORS.GENERAL.ERROR;
-     }
-     } catch (err) {
-          error.value = ERRORS.GENERAL.ERROR;
-     }
-}
-
-async function CreateNewTransaction() {
-     loading_new_transaction.value = true;
-     try {
-          const response = await $fetch<ApiResponse>('/api/management/create/transaction', {
-               method: 'POST',
-               body: {
-                    account_id: account_id.value,
-                    owner_id: owner_id.value,
-                    title: title.value,
-                    description: description.value,
-                    type: type.value,
-                    price: price.value,
-               },
-          });
-
-          if (response.state === 'success') {
-               title.value = '';
-               description.value = '';
-               type.value = '';
-               price.value = 0;
-          } else {
-               error.value = response.message || ERRORS.GENERAL.ERROR;
-          }
-     } catch (err) {
-          error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          loading_new_transaction.value = false;
-          await Promise.all([FetchAllTransactions()]);
-     }
 }
 
 async function UpdateTransaction(transaction: Transaction) {
@@ -270,25 +178,6 @@ async function DeleteTransaction(id: string) {
                body: {
                     id: id,
                },
-          });
-
-          if (response.state !== 'success') {
-               error.value = response.message || ERRORS.GENERAL.ERROR;
-          }
-     } catch (err) {
-          error.value = ERRORS.GENERAL.ERROR;
-     } finally {
-          await Promise.all([FetchAllTransactions()]);
-     }
-}
-
-async function DeleteAllTransactions() {
-     loading_delete_all_transactions.value = true;
-     error.value = '';
-
-          try {
-          const response = await $fetch<ApiResponse>('/api/management/delete/all/transactions', {
-               method: 'DELETE',
           });
 
           if (response.state !== 'success') {
