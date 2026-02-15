@@ -14,7 +14,7 @@ export function useTransactions() {
 	async function FetchAllTransactions() {
 		try {
 			const response = await $fetch<PaginationApiResponse<Transaction[]>>(
-				'/api/management/get/all/transactions',
+				'/api/management/get/all-as-pages/transactions',
 				{
 					method: 'POST',
 					body: { page: page.value, limit },
