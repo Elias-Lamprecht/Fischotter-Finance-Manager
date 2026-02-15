@@ -3,10 +3,10 @@ import type { PaginationApiResponse } from '~/types/API';
 import { ERRORS } from '#shared/utils/Errors';
 
 const accounts = ref<Account[]>([]);
+const TotalAccounts = ref(0);
+const lastPage = ref(1);
 
 export function useFetchAllAccounts() {
-	const TotalAccounts = ref(0);
-	const lastPage = ref(1);
 	const error = ref('');
 	const page = ref(1);
 	const limit = ref(10);
