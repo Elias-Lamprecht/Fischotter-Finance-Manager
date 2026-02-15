@@ -1,5 +1,3 @@
-import { readBody } from 'h3';
-import { sql } from 'drizzle-orm';
 import { getFullAuthCookieContent } from '../../../../utils/getFullAuthCookieContent';
 import { db } from '../../../../database/client';
 import { transaction } from '../../../../database/schema/transaction';
@@ -17,33 +15,10 @@ export default defineEventHandler(async (event) => {
 	}
 
 	try {
-		const body = await readBody(event);
+		const result = await db.select().from(transaction);
 
-		const page = Number(body?.page) || 1;
-		const limit = Number(body?.limit) || 10;
-		const offset = (page - 1) * limit;
-
-		const result = await db.select().from(transaction).limit(limit).offset(offset);
-
-		const totalResult = await db.select({ count: sql<number>`count(*)` }).from(transaction);
-
-		const total = totalResult[0]!.count;
-		const lastPage = Math.ceil(total / limit);
-
-		return {
-			state: 'success',
-			data: result,
-			pagination: {
-				total,
-				page,
-				limit,
-				lastPage,
-				hasNext: page < lastPage,
-				hasPrev: page > 1,
-			},
-		};
+		return { state: 'success', data: result };
 	} catch (error: any) {
 		console.log('Get All Transactions API Error:', error);
-		return { state: 'error', message: 'Something went wrong' };
 	}
 });
