@@ -1,9 +1,5 @@
 <template>
-	<form @submit.prevent="DeleteAllAccounts()">
-		<button type="submit" :disabled="loading_delete_all_accounts">
-			{{ loading_delete_all_accounts ? 'Deleting...' : 'Delete all Accounts' }}
-		</button>
-	</form>
+	<DeleteAllAccountsForm />
 
 	<form @submit.prevent="CreateNewAccount()">
 		<br />
@@ -67,6 +63,8 @@
 	</ul>
 </template>
 <script setup lang="ts">
+import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAccountsForm.vue';
+
 import { ERRORS } from '#shared/utils/Errors';
 import type { Account } from '@/types/Account';
 import type { ApiResponse } from '@/types/API';
@@ -189,26 +187,6 @@ async function DeleteAccount(id: string) {
 	} catch (err) {
 		error.value = ERRORS.GENERAL.ERROR;
 	} finally {
-		await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
-	}
-}
-
-async function DeleteAllAccounts() {
-	loading_delete_all_accounts.value = true;
-	error.value = '';
-
-	try {
-		const response = await $fetch<ApiResponse>('/api/management/delete/all/accounts', {
-			method: 'DELETE',
-		});
-
-		if (response.state !== 'success') {
-			error.value = response.message || ERRORS.GENERAL.ERROR;
-		}
-	} catch (err) {
-		error.value = ERRORS.GENERAL.ERROR;
-	} finally {
-		loading_delete_all_accounts.value = false;
 		await Promise.all([FetchAllAccounts(), FetchAccountCount()]);
 	}
 }
