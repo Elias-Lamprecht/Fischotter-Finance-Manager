@@ -31,16 +31,6 @@ export default defineEventHandler(async (event) => {
 	}
 
 	try {
-		console.log('updating transaction.');
-		console.log({
-			id: body.id,
-			account_id: body.account_id,
-			owner_id: body.owner_id,
-			title: body.title,
-			description: body.description,
-			type: body.type,
-			price: body.price,
-		});
 		await db
 			.update(transaction)
 			.set({

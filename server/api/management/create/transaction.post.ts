@@ -7,14 +7,6 @@ export default defineEventHandler(async (event) => {
 	const FullAuthCookieContent = getFullAuthCookieContent(event);
 	const body = await readBody(event);
 
-	console.log('Missing fields:', {
-		owner_id: !body.owner_id,
-		account_id: !body.account_id,
-		title: !body.title,
-		type: !body.type,
-		price: !body.price,
-	});
-
 	if (!body.owner_id || !body.account_id || !body.title || !body.type || !body.price) {
 		return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
 	}

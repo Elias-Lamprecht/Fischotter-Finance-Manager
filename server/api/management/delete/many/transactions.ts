@@ -12,8 +12,6 @@ export default defineEventHandler(async (event) => {
 		return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
 	}
 
-	console.log(body.TransactionArray);
-
 	if (FullAuthCookieContent === null) {
 		return { state: 'denied', message: ERRORS.AUTH.NOT_LOGGED_IN };
 	}
