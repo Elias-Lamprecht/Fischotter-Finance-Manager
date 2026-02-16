@@ -1,8 +1,5 @@
 <template>
-	<ConfirmModal />
-	<NuxtPage />
+	<NuxtLayout>
+		<NuxtPage />
+	</NuxtLayout>
 </template>
-
-<script setup>
-import ConfirmModal from '@/components/utils/ConfirmModal.vue';
-</script>
