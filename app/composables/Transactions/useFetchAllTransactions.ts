@@ -3,10 +3,10 @@ import type { Transaction } from '@/types/Transaction';
 import type { PaginationApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
 
+const TotalTransactions = ref(0);
 const transactions = ref<Transaction[]>([]);
 
 export function useFetchAllTransactions() {
-	const TotalTransactions = ref(0);
 	const lastPage = ref(1);
 	const error = ref('');
 	const page = ref(1);
@@ -25,6 +25,7 @@ export function useFetchAllTransactions() {
 			if (response.state === 'success') {
 				transactions.value = response.data;
 				TotalTransactions.value = response.pagination.total;
+				console.log(TotalTransactions.value);
 				lastPage.value = response.pagination.lastPage;
 			} else {
 				error.value = response.message || ERRORS.GENERAL.ERROR;

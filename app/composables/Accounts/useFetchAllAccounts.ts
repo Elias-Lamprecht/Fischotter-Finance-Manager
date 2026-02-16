@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import type { Account } from '@/types/Account';
 import type { PaginationApiResponse } from '~/types/API';
 import { ERRORS } from '#shared/utils/Errors';
