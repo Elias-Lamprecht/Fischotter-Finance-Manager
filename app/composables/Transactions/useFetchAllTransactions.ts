@@ -6,13 +6,13 @@ import { ERRORS } from '#shared/utils/Errors';
 const TotalTransactions = ref(0);
 const transactions = ref<Transaction[]>([]);
 
-export function useFetchAllTransactions() {
+export function useFetchTransactions() {
 	const lastPage = ref(1);
 	const error = ref('');
 	const page = ref(1);
 	const limit = ref(10);
 
-	async function FetchAllTransactions() {
+	async function FetchTransactions() {
 		try {
 			const response = await $fetch<PaginationApiResponse<Transaction[]>>(
 				'/api/management/get/all-as-pages/transactions',
@@ -35,5 +35,5 @@ export function useFetchAllTransactions() {
 		}
 	}
 
-	return { transactions, TotalTransactions, lastPage, error, page, limit, FetchAllTransactions };
+	return { transactions, TotalTransactions, lastPage, error, page, limit, FetchTransactions };
 }
