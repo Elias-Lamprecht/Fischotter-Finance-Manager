@@ -1,7 +1,7 @@
 <template>
      <DeleteAllTransactionsForm @deleted_all="FetchAllTransactions()" />
 
-     <CreateNewTransactionForm @created="FetchAllTransactions()" />
+     <CreateNewTransactionForm />
 
      <form @submit.prevent="DeleteSelectedTransactions(SelectedTransactions)">
           <button type="submit">Delete Selected Transactions</button>
@@ -97,9 +97,6 @@ import { useDeleteSelectedTransactions } from '@/composables/Transactions/useDel
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue'
 import DeleteAllTransactionsForm from '@/components/management/transactions/DeleteAllTransactionsForm.vue';
-
-// TYPES & ERROR LIST
-import { ERRORS } from '#shared/utils/Errors';
 
 const {
      transactions,

@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="submitTransaction()">
+	<form @submit.prevent="create()">
 		<br />
 		<div>
 			<label for="owner_id">Owner ID:</label>
@@ -46,58 +46,25 @@
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
 
-// Form state
+import { useCreateNewTransaction } from '@/composables/Transactions/useCreateNewTransaction';
+
 const owner_id = ref('');
 const account_id = ref('');
 const title = ref('');
 const description = ref('');
-const type = ref('income');
+const type = ref('');
 const price = ref(0);
 
-// Local state
-const error = ref('');
-const loading = ref(false);
+const { error, loading, CreateNewTransaction } = useCreateNewTransaction();
 
-// Callback to Parent after creation
-const emit = defineEmits<{
-	(event: 'created'): void;
-}>();
-
-async function submitTransaction() {
-	loading.value = true;
-	error.value = '';
-
-	try {
-		const response = await $fetch<ApiResponse>('/api/management/create/transaction', {
-			method: 'POST',
-			body: {
-				owner_id: owner_id.value,
-				account_id: account_id.value,
-				title: title.value,
-				description: description.value,
-				type: type.value,
-				price: price.value,
-			},
-		});
-
-		if (response.state === 'success') {
-			// Reset form
-			owner_id.value = '';
-			account_id.value = '';
-			title.value = '';
-			description.value = '';
-			type.value = 'income';
-			price.value = 0;
-
-			// Emit event to parent
-			emit('created');
-		} else {
-			error.value = response.message || ERRORS.GENERAL.ERROR;
-		}
-	} catch {
-		error.value = ERRORS.GENERAL.ERROR;
-	} finally {
-		loading.value = false;
-	}
+function create() {
+	CreateNewTransaction({
+		owner_id: owner_id.value,
+		account_id: account_id.value,
+		title: title.value,
+		description: description.value,
+		type: type.value,
+		price: price.value,
+	});
 }
 </script>
