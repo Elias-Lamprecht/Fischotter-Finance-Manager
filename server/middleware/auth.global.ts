@@ -5,9 +5,11 @@ export default defineEventHandler(async (event) => {
 	const url = getRequestURL(event).pathname;
 	const auth = getFullAuthCookieContent(event);
 
-	const publicPages = ['/public/login', '/public/register'];
-
 	if (url.startsWith('/api')) {
+		return;
+	}
+
+	if (url.startsWith('/public')) {
 		return;
 	}
 
@@ -17,7 +19,7 @@ export default defineEventHandler(async (event) => {
 	}
 
 	// Redirect unauthenticated users to login
-	if (!auth && !publicPages.includes(url)) {
+	if (!auth) {
 		return sendRedirect(event, '/public/login');
 	}
 
