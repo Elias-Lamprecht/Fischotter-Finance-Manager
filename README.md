@@ -15,7 +15,7 @@
 ```
 git clone https://github.com/Elias-Lamprecht/Fischotter-Finance-Manager.git
 cd Fischotter-Finance-Manager
-Create a .env with the layout of [example.env](example.env) in the root directory.
+Create a .env with the layout of example.env in the root directory.
 pnpm run dev
 ```
 
