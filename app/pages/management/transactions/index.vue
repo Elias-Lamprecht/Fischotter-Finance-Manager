@@ -88,7 +88,7 @@
 </template>
 <script setup lang="ts">
 // COMPOSABLES
-import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions'
+import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions'
 import { useDeleteTransaction } from '@/composables/Transactions/useDeleteTransaction';
 import { useUpdateTransaction } from '@/composables/Transactions/useUpdateTransaction';
 import { useDeleteSelectedTransactions } from '@/composables/Transactions/useDeleteSelectedTransactions'
@@ -103,8 +103,8 @@ const {
      lastPage,
      error: fetchError,
      page,
-     FetchAllTransactions
-} = useFetchAllTransactions()
+     FetchPagenizedTransactions
+} = useFetchPagenizedTransactions()
 
 const {
      error: deleteTransactionError,
@@ -124,13 +124,13 @@ const {
 
 const pageInput = ref(1);
 
-onMounted(() => FetchAllTransactions());
+onMounted(() => FetchPagenizedTransactions());
 
 async function NextPage() {
      if (page.value < lastPage.value) {
           page.value++;
           pageInput.value = page.value;
-          await FetchAllTransactions();
+          await FetchPagenizedTransactions();
      }
 }
 
@@ -138,7 +138,7 @@ async function PreviousPage() {
      if (page.value > 1) {
           page.value--;
           pageInput.value = page.value;
-          await FetchAllTransactions();
+          await FetchPagenizedTransactions();
      }
 }
 
@@ -147,6 +147,6 @@ async function GoToPage() {
      if (pageInput.value > lastPage.value) return;
 
      page.value = pageInput.value;
-     await FetchAllTransactions();
+     await FetchPagenizedTransactions();
 }
 </script>

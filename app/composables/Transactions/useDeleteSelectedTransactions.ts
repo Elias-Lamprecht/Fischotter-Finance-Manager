@@ -1,12 +1,12 @@
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
-import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions';
+import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions';
 import { useConfirm } from '@/composables/useConfirm';
 
 export function useDeleteSelectedTransactions() {
 	const error = ref('');
 	const SelectedTransactions = ref([]);
-	const { FetchAllTransactions } = useFetchAllTransactions();
+	const { FetchPagenizedTransactions } = useFetchPagenizedTransactions();
 	const { showConfirm } = useConfirm();
 
 	async function DeleteSelectedTransactions(TransactionArray: any) {
@@ -27,7 +27,7 @@ export function useDeleteSelectedTransactions() {
 				);
 
 				if (response.state === 'success') {
-					await FetchAllTransactions();
+					await FetchPagenizedTransactions();
 					SelectedTransactions.value.length = 0;
 				} else {
 					error.value = response.message || ERRORS.GENERAL.ERROR;

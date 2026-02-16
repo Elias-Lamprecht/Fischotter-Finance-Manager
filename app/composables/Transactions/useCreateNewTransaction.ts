@@ -1,12 +1,12 @@
 import { ref } from 'vue';
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
-import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions';
+import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions';
 
 export function useCreateNewTransaction() {
 	const loading = ref(false);
 	const error = ref('');
-	const { FetchAllTransactions } = useFetchAllTransactions();
+	const { FetchPagenizedTransactions } = useFetchPagenizedTransactions();
 
 	async function CreateNewTransaction(payload: {
 		owner_id: string;
@@ -33,7 +33,7 @@ export function useCreateNewTransaction() {
 			});
 
 			if (response.state === 'success') {
-				await FetchAllTransactions();
+				await FetchPagenizedTransactions();
 				console.log('fetching');
 			} else {
 				error.value = response.message || ERRORS.GENERAL.ERROR;

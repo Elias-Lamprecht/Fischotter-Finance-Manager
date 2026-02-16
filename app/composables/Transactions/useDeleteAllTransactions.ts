@@ -1,13 +1,13 @@
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
 import { useConfirm } from '@/composables/useConfirm';
-import { useFetchAllTransactions } from './useFetchAllTransactions';
+import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions';
 
 export function useDeleteAllTransactions() {
 	const loading = ref(false);
 	const error = ref('');
 	const { showConfirm } = useConfirm();
-	const { FetchAllTransactions } = useFetchAllTransactions();
+	const { FetchPagenizedTransactions } = useFetchPagenizedTransactions();
 
 	async function DeleteAllTransactions() {
 		loading.value = true;
@@ -25,7 +25,7 @@ export function useDeleteAllTransactions() {
 				);
 
 				if (response.state === 'success') {
-					await FetchAllTransactions();
+					await FetchPagenizedTransactions();
 				} else {
 					error.value = response.message || ERRORS.GENERAL.ERROR;
 				}

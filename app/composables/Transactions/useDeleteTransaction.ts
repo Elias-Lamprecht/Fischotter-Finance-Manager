@@ -1,11 +1,11 @@
 import type { ApiResponse } from '~/types/API';
 import { ERRORS } from '#shared/utils/Errors';
-import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions';
+import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions';
 import { useConfirm } from '@/composables/useConfirm';
 
 export function useDeleteTransaction() {
 	const error = ref('');
-	const { FetchAllTransactions } = useFetchAllTransactions();
+	const { FetchPagenizedTransactions } = useFetchPagenizedTransactions();
 	const { showConfirm } = useConfirm();
 
 	async function DeleteTransaction(id: string) {
@@ -23,7 +23,7 @@ export function useDeleteTransaction() {
 					},
 				);
 				if (response.state === 'success') {
-					await FetchAllTransactions();
+					await FetchPagenizedTransactions();
 				} else {
 					error.value = response.message || ERRORS.GENERAL.ERROR;
 				}

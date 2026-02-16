@@ -1,11 +1,11 @@
 import type { ApiResponse } from '~/types/API';
 import type { Transaction } from '~/types/Transaction';
-import { useFetchAllTransactions } from '@/composables/Transactions/useFetchAllTransactions';
+import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions';
 import { ERRORS } from '#shared/utils/Errors';
 
 export function useUpdateTransaction() {
 	const error = ref('');
-	const { FetchAllTransactions } = useFetchAllTransactions();
+	const { FetchPagenizedTransactions } = useFetchPagenizedTransactions();
 
 	async function UpdateTransaction(transaction: Transaction) {
 		try {
@@ -23,7 +23,7 @@ export function useUpdateTransaction() {
 			});
 
 			if (response.state === 'success') {
-				await FetchAllTransactions();
+				await FetchPagenizedTransactions();
 			} else {
 				error.value = response.message || ERRORS.GENERAL.ERROR;
 			}
