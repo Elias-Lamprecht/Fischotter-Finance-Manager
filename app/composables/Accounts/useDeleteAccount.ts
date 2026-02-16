@@ -1,10 +1,10 @@
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
-import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
+import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
 
 export function useDeleteAccount() {
 	const error = ref('');
-	const { FetchAllAccounts } = useFetchAllAccounts();
+	const { FetchPagenizedAccounts } = useFetchPagenizedAccounts();
 
 	async function DeleteAccount(id: string) {
 		try {
@@ -14,14 +14,14 @@ export function useDeleteAccount() {
 			});
 
 			if (response.state === 'success') {
-				await FetchAllAccounts();
+				await FetchPagenizedAccounts();
 			} else {
 				error.value = response.message || ERRORS.GENERAL.ERROR;
 			}
 		} catch (err) {
 			error.value = ERRORS.GENERAL.ERROR;
 		} finally {
-			FetchAllAccounts();
+			FetchPagenizedAccounts();
 		}
 	}
 	return { error, DeleteAccount };

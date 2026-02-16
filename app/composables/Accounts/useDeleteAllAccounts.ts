@@ -1,13 +1,13 @@
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
 import { useConfirm } from '@/composables/useConfirm';
-import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
+import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
 
 export function useDeleteAllAccounts() {
 	const error = ref('');
 	const loading = ref(false);
 	const { showConfirm } = useConfirm();
-	const { FetchAllAccounts } = useFetchAllAccounts();
+	const { FetchPagenizedAccounts } = useFetchPagenizedAccounts();
 
 	async function DeleteAllAccounts() {
 		const result = await showConfirm('Are you sure you want to delete all Accounts?');
@@ -24,7 +24,7 @@ export function useDeleteAllAccounts() {
 				);
 
 				if (response.state === 'success') {
-					await FetchAllAccounts();
+					await FetchPagenizedAccounts();
 				} else {
 					error.value = response.message || ERRORS.GENERAL.ERROR;
 				}

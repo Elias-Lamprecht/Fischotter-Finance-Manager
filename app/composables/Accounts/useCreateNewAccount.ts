@@ -1,11 +1,11 @@
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
-import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
+import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
 
 export function useCreateNewAccount() {
 	const error = ref('');
 	const loading = ref(false);
-	const { FetchAllAccounts } = useFetchAllAccounts();
+	const { FetchPagenizedAccounts } = useFetchPagenizedAccounts();
 
 	async function CreateNewAccount(payload: {
 		owner_id: string;
@@ -26,7 +26,7 @@ export function useCreateNewAccount() {
 			});
 
 			if (response.state === 'success') {
-				await FetchAllAccounts();
+				await FetchPagenizedAccounts();
 			} else {
 				error.value = response.message || ERRORS.GENERAL.ERROR;
 			}

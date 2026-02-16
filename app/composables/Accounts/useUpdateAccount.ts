@@ -1,11 +1,11 @@
 import type { ApiResponse } from '~/types/API';
 import type { Account } from '~/types/Account';
-import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
+import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
 import { ERRORS } from '#shared/utils/Errors';
 
 export function useUpdateAccount() {
 	const error = ref('');
-	const { FetchAllAccounts } = useFetchAllAccounts();
+	const { FetchPagenizedAccounts } = useFetchPagenizedAccounts();
 
 	async function UpdateAccount(account: Account) {
 		try {
@@ -20,7 +20,7 @@ export function useUpdateAccount() {
 			});
 
 			if (response.state === 'success') {
-				await FetchAllAccounts();
+				await FetchPagenizedAccounts();
 			} else {
 				error.value = response.message || ERRORS.GENERAL.ERROR;
 			}

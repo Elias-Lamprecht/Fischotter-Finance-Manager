@@ -1,12 +1,12 @@
 import type { ApiResponse } from '@/types/API';
 import { ERRORS } from '#shared/utils/Errors';
-import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
+import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
 import { useConfirm } from '@/composables/useConfirm';
 
 export function useDeleteSelectedAccounts() {
 	const error = ref('');
 	const SelectedAccounts = ref([]);
-	const { FetchAllAccounts } = useFetchAllAccounts();
+	const { FetchPagenizedAccounts } = useFetchPagenizedAccounts();
 	const { showConfirm } = useConfirm();
 
 	async function DeleteSelectedAccounts(AccountArray: any) {
@@ -27,7 +27,7 @@ export function useDeleteSelectedAccounts() {
 				);
 
 				if (response.state === 'success') {
-					await FetchAllAccounts();
+					await FetchPagenizedAccounts();
 					SelectedAccounts.value.length = 0;
 				} else {
 					error.value = response.message || ERRORS.GENERAL.ERROR;

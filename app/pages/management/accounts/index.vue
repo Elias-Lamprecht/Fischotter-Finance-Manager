@@ -51,7 +51,7 @@ import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAcc
 import CreateNewAccountForm from '@/components/management/accounts/CreateNewAccountForm.vue';
 
 // COMPOSABLES
-import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
+import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
 import { useUpdateAccount } from '@/composables/Accounts/useUpdateAccount';
 import { useDeleteAccount } from '~/composables/Accounts/useDeleteAccount';
 import { useDeleteSelectedAccounts } from '~/composables/Accounts/useDeleteSelectedAccounts';
@@ -62,8 +62,8 @@ const {
 	lastPage,
 	error: fetchError,
 	page,
-	FetchAllAccounts,
-} = useFetchAllAccounts();
+	FetchPagenizedAccounts,
+} = useFetchPagenizedAccounts();
 
 const {
 	error: deleteSelectedError,
@@ -76,6 +76,6 @@ const { error: DeleteError, DeleteAccount } = useDeleteAccount();
 const { error: UpdateError, UpdateAccount } = useUpdateAccount();
 
 onMounted(async () => {
-	FetchAllAccounts();
+	FetchPagenizedAccounts();
 });
 </script>

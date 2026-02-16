@@ -7,12 +7,12 @@ const accounts = ref<Account[]>([]);
 const TotalAccounts = ref(0);
 const lastPage = ref(1);
 
-export function useFetchAllAccounts() {
+export function useFetchPagenizedAccounts() {
 	const error = ref('');
 	const page = ref(1);
 	const limit = ref(10);
 
-	async function FetchAllAccounts() {
+	async function FetchPagenizedAccounts() {
 		try {
 			const response = await $fetch<PaginationApiResponse<Account[]>>(
 				'/api/management/get/all-as-pages/accounts',
@@ -33,5 +33,5 @@ export function useFetchAllAccounts() {
 			error.value = ERRORS.GENERAL.ERROR;
 		}
 	}
-	return { accounts, TotalAccounts, lastPage, error, page, limit, FetchAllAccounts };
+	return { accounts, TotalAccounts, lastPage, error, page, limit, FetchPagenizedAccounts };
 }
