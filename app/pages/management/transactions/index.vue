@@ -1,6 +1,5 @@
 <template>
-     <DeleteAllTransactionsForm @deleted_all="FetchAllTransactions()" />
-
+     <DeleteAllTransactionsForm />
      <CreateNewTransactionForm />
 
      <form @submit.prevent="DeleteSelectedTransactions(SelectedTransactions)">
