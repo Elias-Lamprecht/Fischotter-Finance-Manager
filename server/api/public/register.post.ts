@@ -21,12 +21,7 @@ export default defineEventHandler(async (event) => {
 		const existingUser = await db
 			.select()
 			.from(user)
-			.where(
-				or(
-					eq(user.email, body.username_or_email),
-					eq(user.username, body.username_or_email),
-				),
-			)
+			.where(or(eq(user.email, body.email), eq(user.username, body.username)))
 			.limit(1);
 
 		if (existingUser.length > 0) {
@@ -43,7 +38,7 @@ export default defineEventHandler(async (event) => {
 				password: hashedPassword,
 				role: 'user',
 				status: 'disabled',
-				email: body.email,
+				email: body.email || null,
 			})
 			.returning();
 
@@ -63,5 +58,6 @@ export default defineEventHandler(async (event) => {
 		};
 	} catch (error: any) {
 		console.log('Register API Error:', error);
+		return { state: 'error', message: ERRORS.GENERAL.ERROR };
 	}
 });
