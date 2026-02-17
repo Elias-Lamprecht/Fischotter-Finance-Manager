@@ -1,44 +1,61 @@
 <template>
-	<form @submit.prevent="submitForm">
-		<div>
-			<label for="username">Username:</label>
-			<input v-model="username" id="username" type="text" required />
-		</div>
+	<div class="auth-page">
+		<fieldset class="auth-page__fieldset">
+			<legend class="auth-page__legend">Register</legend>
 
-		<div>
-			<label for="email">email:</label>
-			<input v-model="email" id="email" type="text" />
-		</div>
+			<form @submit.prevent="submitForm" class="auth-page__form">
+				<input
+					v-model="username"
+					type="text"
+					placeholder="Username"
+					class="auth-page__form-input"
+					required
+				/>
 
-		<div>
-			<label for="password">password:</label>
-			<input v-model="password" id="password" type="text" required />
-		</div>
+				<input
+					v-model="email"
+					type="email"
+					placeholder="Email (optional)"
+					class="auth-page__form-input"
+				/>
 
-		<br /><a href="/public/login">Login</a> <br /><br />
+				<input
+					v-model="password"
+					type="password"
+					placeholder="Password"
+					class="auth-page__form-input"
+					required
+				/>
 
-		<button type="submit" :disabled="loading">
-			{{ loading ? 'Creating...' : 'Create Account' }}
-		</button>
+				<a href="/public/login" class="auth-page__switch-link"> Login </a>
 
-		<p v-if="error" style="color: red">{{ error }}</p>
-		<p v-if="success" style="color: green">Account created successfully!</p>
-	</form>
+				<button type="submit" :disabled="loading" class="auth-page__login-button">
+					{{ loading ? 'Creating...' : 'Create Account' }}
+				</button>
+
+				<p v-if="error" class="auth-page__error">
+					{{ error }}
+				</p>
+
+				<p v-if="success" class="auth-page__success">Account created successfully!</p>
+			</form>
+		</fieldset>
+	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
 	layout: 'public',
 });
 
 import { ref } from 'vue';
+import type { ApiResponse } from '@/types/API';
 
 const username = ref('');
 const email = ref('');
 const password = ref('');
 
 const loading = ref(false);
-
 const error = ref('');
 const success = ref(false);
 
@@ -48,25 +65,24 @@ async function submitForm() {
 	success.value = false;
 
 	try {
-		const response = await $fetch('/api/public/register', {
+		const data = await $fetch<ApiResponse>('/api/public/register', {
 			method: 'POST',
-			body: {
-				username: username.value,
-				email: email.value,
-				password: password.value,
-			},
+			body: { username: username.value, email: email.value, password: password.value },
 		});
 
-		const data = response;
+		console.log(data);
 
-		if (!data.state === 'success') {
-			error.value = data.message || 'Failed to create account';
-		} else {
-			success.value = true;
-			username.value = '';
-			email.value = '';
-			password.value = '';
+		if (data.state !== 'success') {
+			error.value = data.message || 'Failed to create account.';
+			return;
 		}
+
+		success.value = true;
+
+		// reset form
+		username.value = '';
+		email.value = '';
+		password.value = '';
 	} catch (err) {
 		error.value = 'Network or server error';
 		console.error(err);
