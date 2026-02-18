@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, numeric } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, numeric, integer } from 'drizzle-orm/pg-core';
 
 export const transaction = pgTable('transactions', {
 	id: uuid('id').defaultRandom().primaryKey(),
@@ -8,5 +8,8 @@ export const transaction = pgTable('transactions', {
 	description: varchar('description', { length: 128 }),
 	type: varchar('type', { length: 16 }).notNull(),
 	price: numeric('price', { precision: 12, scale: 2 }).notNull(),
+	day: integer('day').notNull(),
+	month: integer('month').notNull(),
+	year: integer('year').notNull(),
 	created_at: timestamp('created_at').defaultNow(),
 });
