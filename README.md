@@ -69,7 +69,7 @@ After Drizzle Studio opens:
 2. Open the generated SQL file located in:
 
      ```
-     ./drizzle/0000_nappy_jasper_sitwell.sql
+     ./drizzle/
      ```
 
 3. Copy the SQL query from that file.
