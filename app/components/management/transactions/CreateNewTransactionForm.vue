@@ -34,6 +34,18 @@
 			<label for="price">price:</label>
 			<input v-model="price" id="price" type="number" step="0.01" />
 		</div>
+		<li>
+			Day:
+			<input type="number" step="1" min="1" />
+		</li>
+		<li>
+			Month:
+			<input type="number" step="1" min="1" />
+		</li>
+		<li>
+			Year:
+			<input type="number" step="1" min="2025" />
+		</li>
 		<br />
 		<button type="submit" :disabled="loading">
 			{{ loading ? 'Creating...' : 'Create new Transaction' }}
@@ -43,9 +55,6 @@
 	<p>{{ error }}</p>
 </template>
 <script setup lang="ts">
-import type { ApiResponse } from '@/types/API';
-import { ERRORS } from '#shared/utils/Errors';
-
 import { useCreateNewTransaction } from '@/composables/Transactions/useCreateNewTransaction';
 
 const owner_id = ref('');
@@ -54,6 +63,9 @@ const title = ref('');
 const description = ref('');
 const type = ref('');
 const price = ref(0);
+const day = ref(1);
+const month = ref(1);
+const year = ref(1);
 
 const { error, loading, CreateNewTransaction } = useCreateNewTransaction();
 
@@ -65,6 +77,9 @@ function create() {
 		description: description.value,
 		type: type.value,
 		price: price.value,
+		day: day.value,
+		month: month.value,
+		year: year.value,
 	});
 }
 </script>
