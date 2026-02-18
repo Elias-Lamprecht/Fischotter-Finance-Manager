@@ -1,37 +1,53 @@
 <template>
-	<form @submit.prevent="submitForm">
-		<div>
-			<label for="username_or_email">Username or Email:</label>
-			<input v-model="username_or_email" id="username_or_email" type="text" required />
-		</div>
+	<div class="auth-page">
+		<fieldset class="auth-page__fieldset">
+			<legend class="auth-page__legend">Login</legend>
 
-		<div>
-			<label for="password">password:</label>
-			<input v-model="password" id="password" type="password" required />
-		</div>
+			<form @submit.prevent="submitForm" class="auth-page__form">
+				<input
+					v-model="username_or_email"
+					type="text"
+					placeholder="Username or Email"
+					class="auth-page__form-input"
+					required
+				/>
 
-		<br /><a href="/public/register">Register</a> <br /><br />
+				<input
+					v-model="password"
+					type="password"
+					placeholder="Password"
+					class="auth-page__form-input"
+					required
+				/>
 
-		<button type="submit" :disabled="loading">
-			{{ loading ? 'Logging in...' : 'Login' }}
-		</button>
+				<a href="/public/register" class="auth-page__switch-link"> Register </a>
 
-		<p v-if="error" style="color: red">{{ error }}</p>
-	</form>
+				<button type="submit" :disabled="loading" class="auth-page__login-button">
+					{{ loading ? 'Logging in...' : 'Login' }}
+				</button>
+
+				<p v-if="error" class="auth-page__error">
+					{{ error }}
+				</p>
+			</form>
+		</fieldset>
+	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
 	layout: 'public',
 });
 
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import type { ApiResponse } from '~/types/API';
 
 const router = useRouter();
 
 const username_or_email = ref('');
 const password = ref('');
+
 const loading = ref(false);
 const error = ref('');
 
@@ -40,21 +56,17 @@ async function submitForm() {
 	error.value = '';
 
 	try {
-		const response = await $fetch('/api/public/login', {
+		const data = await $fetch<ApiResponse>('/api/public/login', {
 			method: 'POST',
-			body: {
-				username_or_email: username_or_email.value,
-				password: password.value,
-			},
+			body: { username_or_email: username_or_email.value, password: password.value },
 		});
 
-		const data = response;
-
-		if (!data.state === 'success') {
+		if (data.state !== 'success') {
 			error.value = data.message || 'Failed to login.';
-		} else {
-			router.push('/home');
+			return;
 		}
+
+		router.push('/home');
 	} catch (err) {
 		error.value = 'Network or server error';
 		console.error(err);
@@ -63,3 +75,5 @@ async function submitForm() {
 	}
 }
 </script>
+
+<style src="@/assets/public/auth.scss" lang="scss"></style>
