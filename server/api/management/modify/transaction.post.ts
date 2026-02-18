@@ -41,6 +41,9 @@ export default defineEventHandler(async (event) => {
 				description: body.description,
 				type: body.type,
 				price: body.price,
+				day: body.day,
+				month: body.month,
+				year: body.year,
 			})
 			.where(eq(transaction.id, body.id));
 

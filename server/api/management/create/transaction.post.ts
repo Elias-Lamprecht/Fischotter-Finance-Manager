@@ -7,7 +7,16 @@ export default defineEventHandler(async (event) => {
 	const FullAuthCookieContent = getFullAuthCookieContent(event);
 	const body = await readBody(event);
 
-	if (!body.owner_id || !body.account_id || !body.title || !body.type || !body.price) {
+	if (
+		!body.owner_id ||
+		!body.account_id ||
+		!body.title ||
+		!body.type ||
+		!body.price ||
+		!body.day ||
+		!body.month ||
+		!body.year
+	) {
 		return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
 	}
 
@@ -29,6 +38,9 @@ export default defineEventHandler(async (event) => {
 				description: body.description,
 				type: body.type,
 				price: body.price,
+				day: body.day,
+				month: body.month,
+				year: body.year,
 			})
 			.returning();
 
