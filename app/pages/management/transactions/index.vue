@@ -44,6 +44,18 @@
 			Price:
 			<input v-model="transaction.price" type="number" step="0.01" />
 		</li>
+		<li>
+			Day:
+			<input type="number" step="1" min="1" />
+		</li>
+		<li>
+			Month:
+			<input type="number" step="1" min="1" />
+		</li>
+		<li>
+			Year:
+			<input type="number" step="1" min="2025" />
+		</li>
 
 		<li>
 			Created at:
