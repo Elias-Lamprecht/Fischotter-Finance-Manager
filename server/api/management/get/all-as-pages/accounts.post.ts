@@ -19,6 +19,10 @@ export default defineEventHandler(async (event) => {
 	try {
 		const body = await readBody(event);
 
+		if (body.page || body.limit) {
+			return { state: 'error', message: ERRORS.GENERAL.MISSING_DATA };
+		}
+
 		const page = Number(body?.page) || 1;
 		const limit = Number(body?.limit) || 10;
 		const offset = (page - 1) * limit;
