@@ -84,9 +84,9 @@
 <script setup lang="ts">
 // COMPOSABLES
 import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions';
-import { useDeleteTransaction } from '@/composables/Transactions/useDeleteTransaction';
+import { useDeleteTransaction } from '~/composables/Transactions/delete/useDeleteTransaction';
 import { useUpdateTransaction } from '@/composables/Transactions/useUpdateTransaction';
-import { useDeleteSelectedTransactions } from '@/composables/Transactions/useDeleteSelectedTransactions';
+import { useDeleteSelectedTransactions } from '~/composables/Transactions/delete/useDeleteSelectedTransactions';
 
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue';

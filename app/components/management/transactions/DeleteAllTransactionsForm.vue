@@ -7,7 +7,7 @@
 	</form>
 </template>
 <script setup lang="ts">
-import { useDeleteAllTransactions } from '~/composables/Transactions/useDeleteAllTransactions';
+import { useDeleteAllTransactions } from '~/composables/Transactions/delete/useDeleteAllTransactions';
 
 const { error, loading, DeleteAllTransactions } = useDeleteAllTransactions();
 </script>
