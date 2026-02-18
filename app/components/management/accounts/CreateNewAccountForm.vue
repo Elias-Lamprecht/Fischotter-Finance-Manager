@@ -3,7 +3,9 @@
 		<br />
 		<div>
 			<label for="owner_id">Owner ID:</label>
-			<input v-model="owner_id" id="owner_id" type="text" required />
+			<select id="owner_id" v-model="owner_id" v-for="user in users">
+				<option :value="user.id" :key="user.id">{{ user.username }}</option>
+			</select>
 		</div>
 
 		<div>
@@ -25,10 +27,13 @@
 </template>
 <script setup lang="ts">
 import { useCreateNewAccount } from '@/composables/Accounts/useCreateNewAccount';
+import { useFetchAllUsers } from '@/composables/Users/useFetchAllUsers';
 
 const owner_id = ref('');
 const title = ref('');
 const description = ref('');
+
+onMounted(() => FetchAllUsers());
 
 function submit() {
 	CreateNewAccount({
@@ -37,6 +42,8 @@ function submit() {
 		description: description.value,
 	});
 }
+
+const { users, error: fetchAllError, FetchAllUsers } = useFetchAllUsers();
 
 const { error, loading, CreateNewAccount } = useCreateNewAccount();
 </script>
