@@ -14,6 +14,9 @@ export function useCreateNewTransaction() {
 		title: string;
 		type: string;
 		price: number;
+		day: number;
+		month: number;
+		year: number;
 		description?: string;
 	}) {
 		loading.value = true;
@@ -29,6 +32,9 @@ export function useCreateNewTransaction() {
 					description: payload.description,
 					type: payload.type,
 					price: payload.price,
+					day: payload.day,
+					month: payload.month,
+					year: payload.year,
 				},
 			});
 
