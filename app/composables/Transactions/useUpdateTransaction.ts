@@ -19,6 +19,9 @@ export function useUpdateTransaction() {
 					description: transaction.description,
 					type: transaction.type,
 					price: transaction.price,
+					day: transaction.day,
+					month: transaction.month,
+					year: transaction.year,
 				},
 			});
 

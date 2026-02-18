@@ -46,15 +46,15 @@
 		</li>
 		<li>
 			Day:
-			<input type="number" step="1" min="1" />
+			<input type="number" step="1" min="1" v-model="transaction.day" />
 		</li>
 		<li>
 			Month:
-			<input type="number" step="1" min="1" />
+			<input type="number" step="1" min="1" v-model="transaction.month" />
 		</li>
 		<li>
 			Year:
-			<input type="number" step="1" min="2025" />
+			<input type="number" step="1" min="2025" v-model="transaction.year" />
 		</li>
 
 		<li>
