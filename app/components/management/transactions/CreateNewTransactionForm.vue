@@ -3,12 +3,16 @@
 		<br />
 		<div>
 			<label for="owner_id">Owner ID:</label>
-			<input v-model="owner_id" id="owner_id" type="text" required />
+			<select id="owner_id" v-model="owner_id" v-for="user in users">
+				<option :value="user.id" :key="user.id">{{ user.username }}</option>
+			</select>
 		</div>
 
 		<div>
 			<label for="account_id">Account ID:</label>
-			<input v-model="account_id" id="account_id" type="text" required />
+			<select id="account_id" v-model="account_id" v-for="account in accounts">
+				<option :value="account.id" :key="account.id">{{ account.title }}</option>
+			</select>
 		</div>
 
 		<div>
@@ -56,6 +60,8 @@
 </template>
 <script setup lang="ts">
 import { useCreateNewTransaction } from '@/composables/Transactions/useCreateNewTransaction';
+import { useFetchAllUsers } from '@/composables/Users/useFetchAllUsers';
+import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
 
 const owner_id = ref('');
 const account_id = ref('');
@@ -67,6 +73,10 @@ const day = ref(1);
 const month = ref(1);
 const year = ref(1);
 
+onMounted(() => Promise.all([FetchAllAccounts(), FetchAllUsers()]));
+
+const { accounts, error: fetchAllAccountsError, FetchAllAccounts } = useFetchAllAccounts();
+const { users, error: fetchAllUserError, FetchAllUsers } = useFetchAllUsers();
 const { error, loading, CreateNewTransaction } = useCreateNewTransaction();
 
 function create() {
