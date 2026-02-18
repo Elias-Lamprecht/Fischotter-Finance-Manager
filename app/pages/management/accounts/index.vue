@@ -53,8 +53,8 @@ import CreateNewAccountForm from '@/components/management/accounts/CreateNewAcco
 // COMPOSABLES
 import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
 import { useUpdateAccount } from '@/composables/Accounts/useUpdateAccount';
-import { useDeleteAccount } from '~/composables/Accounts/useDeleteAccount';
-import { useDeleteSelectedAccounts } from '~/composables/Accounts/useDeleteSelectedAccounts';
+import { useDeleteAccount } from '~/composables/Accounts/delete/useDeleteAccount';
+import { useDeleteSelectedAccounts } from '~/composables/Accounts/delete/useDeleteSelectedAccounts';
 
 const {
 	accounts,

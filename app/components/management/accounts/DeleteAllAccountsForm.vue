@@ -8,7 +8,7 @@
 	<p v-if="error" style="color: red">{{ error }}</p>
 </template>
 <script setup lang="ts">
-import { useDeleteAllAccounts } from '@/composables/Accounts/useDeleteAllAccounts';
+import { useDeleteAllAccounts } from '~/composables/Accounts/delete/useDeleteAllAccounts';
 
 const { error, loading, DeleteAllAccounts } = useDeleteAllAccounts();
 </script>
