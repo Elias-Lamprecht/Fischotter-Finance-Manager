@@ -10,7 +10,7 @@ export const ERRORS = {
 		INSUFFICIENT_PERMISSIONS:
 			'Your User Account is missing the needed permissions for this API',
 		INVALID_CREDENTIALS: 'Invalid Credentials',
-		USERNAME_TAKEN: 'Username is already taken',
+		USERNAME_TAKEN: 'Username or Email is already taken',
 	},
 	UPDATE: {
 		NO_CHANGES_DETECTED:
