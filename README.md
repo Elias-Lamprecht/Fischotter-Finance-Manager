@@ -1,26 +1,105 @@
-# A Package Manager made with Nuxt
+# Fischotter Finance Manager
+
+A finance management hobby project built with Nuxt.
 
 > [!CAUTION]
->
-> 1.   this is a hobby project and not close to done.
-> 2.   to test this project you need [pnpm](https://pnpm.io/).
+> This project is in early development and is **not production ready**.
+> Expect breaking changes and incomplete features.
+
+---
+
+## Requirements
+
+Before running the project, make sure you have:
+
+- [pnpm](https://pnpm.io/)
+- PostgreSQL (only tested and officially supported database)
+- A properly configured [.env](example.env) file
 
 > [!WARNING]
->
-> 1.   A Database is needed.
-> 2.   The only tested and working Database is Postgres others might work too.
+> Other databases may work, but only PostgreSQL has been tested.
+> Using other databases may result in unexpected errors.
 
-### Current Install / Use Method for Developing (there is no usable version at this moment)
+---
 
-```
+## Development Setup
+
+Clone the repository:
+
+```bash
 git clone https://github.com/Elias-Lamprecht/Fischotter-Finance-Manager.git
 cd Fischotter-Finance-Manager
-Create a .env with the layout of example.env in the root directory.
+```
+
+Create a `.env` file in the root directory using [example.env](example.env) as a template.
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+Start the development server:
+
+```bash
 pnpm run dev
 ```
 
-### To check if db is setup correctly
+---
 
+## Database Setup
+
+Ensure your PostgreSQL instance is running and correctly configured in your [.env](example.env) file.
+
+Generate the migration:
+
+```bash
+pnpm run db:generate
 ```
+
+Start Drizzle Studio:
+
+```bash
 npx drizzle-kit studio
 ```
+
+After Drizzle Studio opens:
+
+1. Go to the **SQL Console** tab.
+2. Open the generated SQL file located in:
+
+     ```
+     ./drizzle/0000_nappy_jasper_sitwell.sql
+     ```
+
+3. Copy the SQL query from that file.
+4. Paste it into the SQL Console.
+5. Execute it using:
+
+     ```
+     Ctrl (or Strg on some keyboards) + Shift + Enter
+     ```
+
+If everything is configured correctly, the database schema will be created without errors.
+
+> [!TIP]
+> If Drizzle Studio fails to start or execution throws errors, double-check:
+>
+> - Database credentials in `.env`
+> - Database host and port
+> - That PostgreSQL is running
+> - That the database specified in `DATABASE_URL` exists
+
+---
+
+## Project Status
+
+- 🚧 Active hobby project
+- ❌ No stable release
+- ❌ Not production-ready
+
+---
+
+## License
+
+Currently not specified.
