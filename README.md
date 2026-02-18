@@ -102,4 +102,4 @@ If everything is configured correctly, the database schema will be created witho
 
 ## License
 
-Currently not specified.
+[MIT License](LICENSE)
