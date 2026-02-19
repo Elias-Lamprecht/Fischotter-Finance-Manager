@@ -20,7 +20,7 @@ function submit() {
 		title: title.value,
 		description: description.value,
 	});
-	closeModal(); // close after submit
+	closeModal();
 }
 
 const props = defineProps({
@@ -29,7 +29,7 @@ const props = defineProps({
 const emit = defineEmits(['update:show']);
 
 function closeModal() {
-	emit('update:show', false); // Tell parent to close modal
+	emit('update:show', false);
 }
 </script>
 
