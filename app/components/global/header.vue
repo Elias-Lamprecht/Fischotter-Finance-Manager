@@ -1,39 +1,29 @@
 <template>
-	<header>
-		<ul>
-			<li>
-				<NuxtLink to="/home">Home</NuxtLink>
-			</li>
-			<li>
-				<NuxtLink to="/management/users">User Page</NuxtLink>
-			</li>
-			<li>
-				<NuxtLink to="/management/accounts">Account Page</NuxtLink>
-			</li>
-			<li>
-				<NuxtLink to="/management/transactions">Transaction Page</NuxtLink>
-			</li>
-			<li>
+	<header class="header">
+		<nav class="header__navbar">
+			<div class="header__navbar-left-side">
+				<div>
+					<NuxtLink to="/home">Home</NuxtLink>
+				</div>
+				<div class="dropdown">
+					Admin Pages
+					<div class="dropdown__content">
+						<NuxtLink to="/management/users">User Page</NuxtLink>
+						<NuxtLink to="/management/accounts">Account Page</NuxtLink>
+						<NuxtLink to="/management/transactions">Transaction Page</NuxtLink>
+					</div>
+				</div>
+			</div>
+			<div class="header__navbar-right-side">
 				<form @submit.prevent="logout()">
-					<button type="submit">Logout</button>
+					<button type="submit" class="header__button">Logout</button>
 					<p>{{ error }}</p>
 				</form>
-			</li>
-		</ul>
+			</div>
+		</nav>
 	</header>
 </template>
-<style scoped>
-ul {
-	display: flex;
-	gap: 0.5rem;
-	padding: 0;
-	margin: 0;
-}
-li {
-	padding: 0;
-	margin: 0;
-}
-</style>
+<style src="@/assets/global/header.scss" lang="scss"></style>
 <script setup lang="ts">
 const error = ref('');
 
