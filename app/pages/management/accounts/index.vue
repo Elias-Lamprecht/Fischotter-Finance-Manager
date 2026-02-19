@@ -37,7 +37,6 @@
 				class="EntityList__row"
 				:class="{ selected: SelectedAccounts.includes(account.id) }"
 			>
-				<!-- Checkbox -->
 				<div class="EntityList__list-item EntityList__list-checkbox-item">
 					<input type="checkbox" :value="account.id" v-model="SelectedAccounts" />
 				</div>
