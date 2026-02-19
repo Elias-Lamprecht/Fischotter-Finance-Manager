@@ -5,7 +5,7 @@ import { useConfirm } from '@/composables/useConfirm';
 
 export function useDeleteSelectedAccounts() {
 	const error = ref('');
-	const SelectedAccounts = ref([]);
+	const SelectedAccounts = ref<string[]>([]);
 	const { FetchPagenizedAccounts } = useFetchPagenizedAccounts();
 	const { showConfirm } = useConfirm();
 
