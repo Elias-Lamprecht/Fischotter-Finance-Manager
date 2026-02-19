@@ -82,6 +82,19 @@
 			</div>
 		</div>
 	</div>
+	<nav class="management__page-control">
+		<div>
+			<button @click="PreviousPage" :disabled="page === 1" class="management__button">
+				Previous Page
+			</button>
+		</div>
+		<p class="management__page-control__current-page">{{ page }}</p>
+		<div>
+			<button @click="NextPage" :disabled="page === lastPage" class="management__button">
+				Next Page
+			</button>
+		</div>
+	</nav>
 	<CreateNewAccountForm v-model:show="showModal" />
 </template>
 
@@ -117,6 +130,20 @@ const {
 const { error: DeleteError, DeleteAccount } = useDeleteAccount();
 
 const { error: UpdateError, UpdateAccount } = useUpdateAccount();
+
+async function NextPage() {
+	if (page.value < lastPage.value) {
+		page.value++;
+		await FetchPagenizedAccounts();
+	}
+}
+
+async function PreviousPage() {
+	if (page.value > 1) {
+		page.value--;
+		await FetchPagenizedAccounts();
+	}
+}
 
 onMounted(async () => {
 	FetchPagenizedAccounts();
