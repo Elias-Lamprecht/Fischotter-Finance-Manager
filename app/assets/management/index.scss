@@ -119,6 +119,9 @@
 		border-radius: 6px;
 		transition: background 0.2s;
 	}
+	&__row--transaction {
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.2fr 0.2fr 0.2fr 1fr 1fr 1fr;
+	}
 
 	&__row:first-child {
 		font-weight: 600;
