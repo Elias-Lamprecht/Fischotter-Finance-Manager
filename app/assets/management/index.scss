@@ -119,12 +119,24 @@
 		border-radius: 6px;
 		transition: background 0.2s;
 	}
+
+	&__actions {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__day-month-year {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
 	&__row--user {
 		grid-template-columns: 1fr 3fr 2fr 2fr 2fr 1fr 1fr 2fr 3fr;
 	}
 
 	&__row--transaction {
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.2fr 0.2fr 0.2fr 1fr 1fr 1fr;
+		grid-template-columns: 0.2fr 1fr 1fr 1fr 1fr 1fr 0.2fr 1fr 1fr 1fr 1fr;
 	}
 
 	&__row:first-child {

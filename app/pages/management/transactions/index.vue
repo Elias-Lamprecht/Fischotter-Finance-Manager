@@ -31,9 +31,9 @@
 				<div class="EntityList__header"><b>Description</b></div>
 				<div class="EntityList__header"><b>Type</b></div>
 				<div class="EntityList__header"><b>Price</b></div>
-				<div class="EntityList__header"><b>Day</b></div>
-				<div class="EntityList__header"><b>Month</b></div>
-				<div class="EntityList__header"><b>Year</b></div>
+				<div class="EntityList__header EntityList__day-month-year">
+					<b>Day</b> <b>Month</b> <b>Year</b>
+				</div>
 				<div class="EntityList__header"><b>Created At</b></div>
 				<div class="EntityList__header"><b>Actions</b></div>
 			</div>
@@ -67,13 +67,9 @@
 				<div>
 					<input v-model="transaction.price" type="number" step="0.01" />
 				</div>
-				<div>
+				<div class="EntityList__day-month-year">
 					<input type="number" step="1" min="1" v-model="transaction.day" />
-				</div>
-				<div>
 					<input type="number" step="1" min="1" v-model="transaction.month" />
-				</div>
-				<div>
 					<input type="number" step="1" min="2025" v-model="transaction.year" />
 				</div>
 				<div>
@@ -87,22 +83,20 @@
 						})
 					}}
 				</div>
-				<li>
+				<div class="EntityList__actions">
 					<button
 						@click="UpdateTransaction(transaction)"
 						class="management__button management__update-button"
 					>
 						Update Transaction
 					</button>
-				</li>
-				<li>
 					<button
 						@click="DeleteTransaction(transaction.id)"
 						class="management__button management__delete-button"
 					>
 						Delete Transaction
 					</button>
-				</li>
+				</div>
 			</div>
 		</div>
 	</div>
