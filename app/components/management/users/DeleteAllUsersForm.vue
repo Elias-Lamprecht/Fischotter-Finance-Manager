@@ -1,6 +1,10 @@
 <template>
 	<form @submit.prevent="DeleteAllUsers()">
-		<button type="submit" :disabled="loading">
+		<button
+			type="submit"
+			:disabled="loading"
+			class="management__delete-button management__button"
+		>
 			{{ loading ? 'Deleting...' : 'Delete all Users' }}
 		</button>
 		{{ error }}

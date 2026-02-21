@@ -1,78 +1,115 @@
 <template>
-	<DeleteAllUsersForm />
-	<CreateNewUserForm />
+	<h2 class="management__page-title">Account Management</h2>
 
-	<form @submit.prevent="DeleteSelectedUsers(SelectedUsers)">
-		<button type="submit">Delete Selected Users</button>
-	</form>
+	<div class="management__page-header">
+		<button @click="showModal = true" class="management__button">Create User</button>
+		<div class="management__delete-group">
+			<form @submit.prevent="DeleteSelectedUsers(SelectedUsers)">
+				<button type="submit" class="management__delete-button management__button">
+					Delete Selected Users
+				</button>
+			</form>
+			<DeleteAllUsersForm />
+		</div>
+	</div>
 
-	<p>Total Users: {{ TotalUsers }}</p>
-	<p>Selected Users: {{ SelectedUsers.length }}</p>
+	<div class="management__count-page-wrapper">
+		<div class="management__count-wrapper">
+			<p>Total Users: {{ TotalUsers }}</p>
+			<p>Selected Users: {{ SelectedUsers.length }}</p>
+		</div>
+	</div>
 
-	<ul v-for="user in users" :key="user.id" style="display: flex; flex-direction: row">
-		<li><input type="checkbox" :value="user.id" v-model="SelectedUsers" /></li>
-
-		<li>ID: <input type="text" :value="user.id" disabled /></li>
-
-		<li v-if="user.email">Email: <input type="text" v-model="user.email" /></li>
-
-		<li>Username: <input type="text" v-model="user.username" /></li>
-
-		<li>Displayname: <input type="text" v-model="user.displayname" /></li>
-
-		<li>
-			Role:
-			<select v-model="user.role">
-				<option value="user">user</option>
-				<option value="admin">admin</option>
-			</select>
-		</li>
-
-		<li>
-			Status:
-			<select v-model="user.status">
-				<option value="active">active</option>
-				<option value="disabled">disabled</option>
-			</select>
-		</li>
-
-		<li>
-			Created at:
-			{{
-				new Date(user.created_at).toLocaleString('en-UK', {
-					year: 'numeric',
-					month: 'long',
-					day: 'numeric',
-					hour: '2-digit',
-					minute: '2-digit',
-				})
-			}}
-		</li>
-
-		<li>
-			<button @click="DeleteUser(user.id)">Delete User</button>
-		</li>
-
-		<li>
-			<button @click="UpdateUser(user)">Update User</button>
-		</li>
-		<br />
-	</ul>
-	<ul>
-		<li>
-			<button @click="PreviousPage" :disabled="page === 1">Previous Page</button>
-		</li>
-		<li>
-			<button @click="NextPage" :disabled="page === lastPage">Next Page</button>
-		</li>
-		<li>
-			<input type="number" v-model.number="pageInput" :min="1" :max="lastPage" />
-			<button @click="GoToPage">Go</button>
-		</li>
-		<li>Last Page: {{ lastPage }}</li>
-	</ul>
+	<div class="EntityList">
+		<div class="EntityList__grid">
+			<div class="EntityList__row EntityList__row--user">
+				<div class="EntityList__header"><b>Select</b></div>
+				<div class="EntityList__header"><b>ID</b></div>
+				<div class="EntityList__header"><b>Username</b></div>
+				<div class="EntityList__header"><b>Displayname</b></div>
+				<div class="EntityList__header"><b>Email</b></div>
+				<div class="EntityList__header"><b>Role</b></div>
+				<div class="EntityList__header"><b>Status</b></div>
+				<div class="EntityList__header"><b>Created At</b></div>
+				<div class="EntityList__header"><b>Actions</b></div>
+			</div>
+			<div
+				v-for="user in users"
+				:key="user.id"
+				class="EntityList__row EntityList__row--user"
+				:class="{ selected: SelectedUsers.includes(user.id) }"
+			>
+				<div class="EntityList__list-item">
+					<input type="checkbox" :value="user.id" v-model="SelectedUsers" />
+				</div>
+				<div class="EntityList__list-item">
+					<input type="text" :value="user.id" disabled />
+				</div>
+				<div class="EntityList__list-item">
+					<input type="text" v-model="user.email" />
+				</div>
+				<div class="EntityList__list-item">
+					<input type="text" v-model="user.username" />
+				</div>
+				<div class="EntityList__list-item">
+					<input type="text" v-model="user.displayname" />
+				</div>
+				<div class="EntityList__list-item">
+					<select v-model="user.role">
+						<option value="user">user</option>
+						<option value="admin">admin</option>
+					</select>
+				</div>
+				<div class="EntityList__list-item">
+					<select v-model="user.status">
+						<option value="active">active</option>
+						<option value="disabled">disabled</option>
+					</select>
+				</div>
+				<div class="EntityList__list-item EntityList__list-date-item">
+					{{
+						new Date(user.created_at).toLocaleString('en-UK', {
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+						})
+					}}
+				</div>
+				<div class="EntityList__actions EntityList__list-item">
+					<button
+						@click="UpdateUser(user)"
+						class="management__button management__update-button"
+					>
+						Update User
+					</button>
+					<button
+						@click="DeleteUser(user.id)"
+						class="management__button management__delete-button"
+					>
+						Delete User
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav class="management__page-control">
+		<div>
+			<button @click="PreviousPage" :disabled="page === 1" class="management__button">
+				Previous Page
+			</button>
+		</div>
+		<p class="management__page-control__current-page">{{ page }}</p>
+		<div>
+			<button @click="NextPage" :disabled="page === lastPage" class="management__button">
+				Next Page
+			</button>
+		</div>
+	</nav>
+	<CreateNewUserForm v-model:show="showModal" />
 </template>
-
+<style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
 // COMPOSABLES
 import { useFetchPagenizedUsers } from '@/composables/Users/useFetchPagenizedUsers';
@@ -83,6 +120,8 @@ import { useUpdateUser } from '@/composables/Users/useUpdateUser';
 // COMPONENTS
 import DeleteAllUsersForm from '@/components/management/users/DeleteAllUsersForm.vue';
 import CreateNewUserForm from '@/components/management/users/CreateNewUserForm.vue';
+
+const showModal = ref(false);
 
 const {
 	users,

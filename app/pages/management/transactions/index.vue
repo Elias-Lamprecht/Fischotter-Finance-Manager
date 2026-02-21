@@ -1,96 +1,119 @@
 <template>
-	<DeleteAllTransactionsForm />
-	<CreateNewTransactionForm />
+	<h2 class="management__page-title">Transaction Management</h2>
 
-	<form @submit.prevent="DeleteSelectedTransactions(SelectedTransactions)">
-		<button type="submit">Delete Selected Transactions</button>
-	</form>
+	<div class="management__page-header">
+		<button @click="showModal = true" class="management__button">Create Transaction</button>
+		<div class="management__delete-group">
+			<form @submit.prevent="DeleteSelectedTransactions(SelectedTransactions)">
+				<button type="submit" class="management__delete-button management__button">
+					Delete Selected Transactions
+				</button>
+			</form>
+			<DeleteAllTransactionsForm />
+		</div>
+	</div>
 
-	<p>Total Transactions: {{ TotalTransactions }}</p>
-	<p>Selected Transactions: {{ SelectedTransactions.length }}</p>
+	<div class="management__count-page-wrapper">
+		<div class="management__count-wrapper">
+			<p>Total Transactions: {{ TotalTransactions }}</p>
+			<p>Selected Transactions: {{ SelectedTransactions.length }}</p>
+		</div>
+	</div>
 
-	<ul
-		v-for="transaction in transactions"
-		:key="transaction.id"
-		class="ItemList"
-		:class="{ selected: SelectedTransactions.includes(transaction.id) }"
-	>
-		<li>
-			<input type="checkbox" :value="transaction.id" v-model="SelectedTransactions" />
-		</li>
-
-		<li>ID: <input type="text" :value="transaction.id" disabled /></li>
-
-		<li>Owner ID: <input type="text" v-model="transaction.owner_id" /></li>
-
-		<li>Account ID: <input type="text" v-model="transaction.account_id" /></li>
-
-		<li>Title: <input type="text" v-model="transaction.title" /></li>
-
-		<li v-if="transaction.description">
-			Description: <input type="text" v-model="transaction.description" />
-		</li>
-
-		<li>
-			Type:
-			<select v-model="transaction.type">
-				<option value="income">income</option>
-				<option value="transfer">transfer</option>
-				<option value="expense">expense</option>
-			</select>
-		</li>
-
-		<li>
-			Price:
-			<input v-model="transaction.price" type="number" step="0.01" />
-		</li>
-		<li>
-			Day:
-			<input type="number" step="1" min="1" v-model="transaction.day" />
-		</li>
-		<li>
-			Month:
-			<input type="number" step="1" min="1" v-model="transaction.month" />
-		</li>
-		<li>
-			Year:
-			<input type="number" step="1" min="2025" v-model="transaction.year" />
-		</li>
-
-		<li>
-			Created at:
-			{{
-				new Date(transaction.created_at).toLocaleString('en-UK', {
-					year: 'numeric',
-					month: 'long',
-					day: 'numeric',
-					hour: '2-digit',
-					minute: '2-digit',
-				})
-			}}
-		</li>
-		<li>
-			<button @click="UpdateTransaction(transaction)">Update Transaction</button>
-		</li>
-		<li>
-			<button @click="DeleteTransaction(transaction.id)" class="management__delete-button">
-				Delete Transaction
+	<div class="EntityList">
+		<div class="EntityList__grid">
+			<div class="EntityList__row EntityList__row--transaction">
+				<div class="EntityList__header"><b>Select</b></div>
+				<div class="EntityList__header"><b>ID</b></div>
+				<div class="EntityList__header"><b>Owner ID</b></div>
+				<div class="EntityList__header"><b>Account ID</b></div>
+				<div class="EntityList__header"><b>Title</b></div>
+				<div class="EntityList__header"><b>Description</b></div>
+				<div class="EntityList__header"><b>Type</b></div>
+				<div class="EntityList__header"><b>Price</b></div>
+				<div class="EntityList__header EntityList__day-month-year">
+					<b>Day</b> <b>Month</b> <b>Year</b>
+				</div>
+				<div class="EntityList__header"><b>Created At</b></div>
+				<div class="EntityList__header"><b>Actions</b></div>
+			</div>
+			<div
+				v-for="transaction in transactions"
+				:key="transaction.id"
+				class="EntityList__row EntityList__row--transaction"
+				:class="{ selected: SelectedTransactions.includes(transaction.id) }"
+			>
+				<div>
+					<input
+						type="checkbox"
+						:value="transaction.id"
+						v-model="SelectedTransactions"
+					/>
+				</div>
+				<div><input type="text" :value="transaction.id" disabled /></div>
+				<div><input type="text" v-model="transaction.owner_id" /></div>
+				<div><input type="text" v-model="transaction.account_id" /></div>
+				<div><input type="text" v-model="transaction.title" /></div>
+				<div>
+					<input type="text" v-model="transaction.description" />
+				</div>
+				<div>
+					<select v-model="transaction.type">
+						<option value="income">income</option>
+						<option value="transfer">transfer</option>
+						<option value="expense">expense</option>
+					</select>
+				</div>
+				<div>
+					<input v-model="transaction.price" type="number" step="0.01" />
+				</div>
+				<div class="EntityList__day-month-year">
+					<input type="number" step="1" min="1" v-model="transaction.day" />
+					<input type="number" step="1" min="1" v-model="transaction.month" />
+					<input type="number" step="1" min="2025" v-model="transaction.year" />
+				</div>
+				<div>
+					{{
+						new Date(transaction.created_at).toLocaleString('en-UK', {
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+						})
+					}}
+				</div>
+				<div class="EntityList__actions">
+					<button
+						@click="UpdateTransaction(transaction)"
+						class="management__button management__update-button"
+					>
+						Update Transaction
+					</button>
+					<button
+						@click="DeleteTransaction(transaction.id)"
+						class="management__button management__delete-button"
+					>
+						Delete Transaction
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav class="management__page-control">
+		<div>
+			<button @click="PreviousPage" :disabled="page === 1" class="management__button">
+				Previous Page
 			</button>
-		</li>
-	</ul>
-	<ul>
-		<li>
-			<button @click="PreviousPage" :disabled="page === 1">Previous Page</button>
-		</li>
-		<li>
-			<button @click="NextPage" :disabled="page === lastPage">Next Page</button>
-		</li>
-		<li>
-			<input type="number" v-model.number="pageInput" :min="1" :max="lastPage" />
-			<button @click="GoToPage">Go</button>
-		</li>
-		<li>Last Page: {{ lastPage }}</li>
-	</ul>
+		</div>
+		<p class="management__page-control__current-page">{{ page }}</p>
+		<div>
+			<button @click="NextPage" :disabled="page === lastPage" class="management__button">
+				Next Page
+			</button>
+		</div>
+	</nav>
+	<CreateNewTransactionForm v-model:show="showModal" />
 </template>
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
@@ -103,6 +126,8 @@ import { useDeleteSelectedTransactions } from '~/composables/Transactions/delete
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue';
 import DeleteAllTransactionsForm from '@/components/management/transactions/DeleteAllTransactionsForm.vue';
+
+const showModal = ref(false);
 
 const {
 	transactions,
