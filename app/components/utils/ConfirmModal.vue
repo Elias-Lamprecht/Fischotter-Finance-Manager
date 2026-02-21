@@ -1,5 +1,5 @@
 <script setup>
-import { useConfirm } from '@/composables/useConfirm';
+import { useConfirm } from '~/composables/utils/useConfirm';
 
 const { isOpen, message, answer } = useConfirm();
 </script>
