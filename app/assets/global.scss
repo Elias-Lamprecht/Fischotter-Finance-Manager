@@ -15,6 +15,20 @@
 	--border-primary: hsl(270, 55%, 55%);
 	--text-primary: hsl(270, 100%, 95%);
 
+	--bg-header: hsl(0, 0%, 12%);
+	--border-header: hsl(0, 0%, 20%);
+
+	/* Input / Form Elements */
+	--bg-input: hsl(0, 0%, 20%);
+	--border-input: hsl(0, 0%, 30%);
+	--bg-selected: hsla(270, 60%, 45%, 0.15);
+
+	/* Primary Colors */
+	--color-primary: hsl(270, 60%, 45%);
+	--bg-primary: hsla(270, 60%, 20%, 0.4);
+	--border-primary: hsl(270, 55%, 55%);
+	--text-primary: hsl(270, 100%, 95%);
+
 	/* Error / Danger States */
 	--bg-error: hsla(0, 70%, 15%, 0.4);
 	--border-error: hsl(0, 60%, 40%);
