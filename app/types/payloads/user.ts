@@ -5,9 +5,9 @@ export interface CreateUserPayload {
 }
 
 export interface UpdateUserPayload {
-	username: string;
+	username?: string;
 	email?: string;
 	displayname?: string;
-	role: 'user' | 'admin';
-	status: 'active' | 'disabled';
+	role?: 'user' | 'admin';
+	status?: 'active' | 'disabled';
 }
