@@ -48,7 +48,7 @@ export function useUsersAPI() {
 		}
 	}
 
-	async function CreateNewUser(payload: CreateUserPayload) {
+	async function CreateUser(payload: CreateUserPayload) {
 		loading.value = true;
 		error.value = '';
 
@@ -141,4 +141,19 @@ export function useUsersAPI() {
 			loading.value = false;
 		}
 	}
+
+	return {
+		users,
+		totalUsers,
+		lastPage,
+		loading,
+		error,
+		fetchAll,
+		fetchPagenized,
+		CreateUser,
+		UpdateUser,
+		DeleteUser,
+		DeleteManyUsers,
+		DeleteAllUsers,
+	};
 }
