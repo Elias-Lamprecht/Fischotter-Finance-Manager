@@ -30,6 +30,21 @@
 		font-size: 16px;
 	}
 
+	&__password-wrapper {
+		border-radius: 6px;
+		display: flex;
+		background-color: var(--bg-input);
+		border: 2px solid var(--border-input);
+		align-items: center;
+		padding-right: 0.5rem;
+	}
+
+	&__password-input {
+		width: 100%;
+		background-color: transparent;
+		border: 0;
+	}
+
 	&__switch-link {
 		text-align: center;
 	}

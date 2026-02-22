@@ -11,14 +11,19 @@
 					class="auth-page__form-input"
 					required
 				/>
-
-				<input
-					v-model="password"
-					type="password"
-					placeholder="Password"
-					class="auth-page__form-input"
-					required
-				/>
+				<div class="auth-page__password-wrapper">
+					<input
+						v-model="password"
+						:type="view_status ? 'password' : 'text'"
+						placeholder="Password"
+						class="auth-page__form-input auth-page__password-input"
+						required
+					/>
+					<div @click="switchViewStatus()" class="icon">
+						<Eye v-if="view_status"></Eye>
+						<EyeClosed v-else></EyeClosed>
+					</div>
+				</div>
 
 				<a href="/public/register" class="auth-page__switch-link"> Register </a>
 
@@ -38,10 +43,12 @@
 definePageMeta({
 	layout: 'public',
 });
-
+import { Eye, EyeClosed } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import type { ApiResponse } from '~/types/API';
+
+const view_status = ref(true);
 
 const router = useRouter();
 
@@ -50,6 +57,10 @@ const password = ref('');
 
 const loading = ref(false);
 const error = ref('');
+
+function switchViewStatus() {
+	view_status.value = !view_status.value;
+}
 
 async function submitForm() {
 	loading.value = true;
