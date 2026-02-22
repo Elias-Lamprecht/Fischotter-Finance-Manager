@@ -155,4 +155,19 @@ export function useTransactionsAPI() {
 			loading.value = false;
 		}
 	}
+
+	return {
+		transactions,
+		totalTransactions,
+		lastPage,
+		loading,
+		error,
+		fetchAll,
+		fetchPagenized,
+		CreateTransaction,
+		UpdateTransaction,
+		DeleteAllTransactions,
+		DeleteTransaction,
+		DeleteManyTransactions,
+	};
 }
