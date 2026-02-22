@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { useCreateNewAccount } from '@/composables/Accounts/useCreateNewAccount';
-import { useFetchAllUsers } from '@/composables/Users/useFetchAllUsers';
+import { useAccountStore } from '@/stores/accounts';
+import { useUserStore } from '@/stores/users';
 
-// Form state
+const AccountStore = useAccountStore();
+const UserStore = useUserStore();
+
 const owner_id = ref('');
 const title = ref('');
 const description = ref('');
 
-// Composables
-const { users, error: fetchAllError, FetchAllUsers } = useFetchAllUsers();
-const { error, loading, CreateNewAccount } = useCreateNewAccount();
-
-onMounted(() => FetchAllUsers());
+onMounted(async () => {
+	AccountStore.fetchAllAccounts();
+	UserStore.fetchAllUsers();
+});
 
 // Submit form
 function submit() {
-	CreateNewAccount({
+	AccountStore.CreateAccount({
 		owner_id: owner_id.value,
 		title: title.value,
 		description: description.value,
@@ -43,7 +44,11 @@ function closeModal() {
 					<div>
 						<label for="owner_id">Owner:</label>
 						<select id="owner_id" v-model="owner_id">
-							<option v-for="user in users" :value="user.id" :key="user.id">
+							<option
+								v-for="user in UserStore.users"
+								:value="user.id"
+								:key="user.id"
+							>
 								{{ user.username }}
 							</option>
 						</select>
@@ -59,11 +64,11 @@ function closeModal() {
 						<textarea id="description" v-model="description"></textarea>
 					</div>
 
-					<button type="submit" :disabled="loading">
-						{{ loading ? 'Creating...' : 'Create' }}
+					<button type="submit" :disabled="AccountStore.loading_create">
+						{{ AccountStore.loading_create ? 'Creating...' : 'Create' }}
 					</button>
 
-					<p v-if="error" class="error">{{ error }}</p>
+					<p v-if="AccountStore.error" class="error">{{ AccountStore.error }}</p>
 				</form>
 			</div>
 		</Teleport>
