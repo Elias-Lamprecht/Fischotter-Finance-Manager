@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import { useCreateNewUser } from '@/composables/Users/useCreateNewUser';
+import { useUserStore } from '@/stores/users';
+
+const UserStore = useUserStore();
 
 // Form state
 const username = ref('');
 const email = ref('');
 const password = ref('');
 
-// Composable
-const { error, loading, CreateNewUser } = useCreateNewUser();
-
-// Create form
 function create() {
-	CreateNewUser({
+	UserStore.CreateUser({
 		username: username.value,
 		email: email.value,
 		password: password.value,
@@ -47,8 +45,8 @@ function closeModal() {
 						<input v-model="password" id="password" type="text" required />
 					</div>
 					<br />
-					<button type="submit" :disabled="loading">
-						{{ loading ? 'Creating...' : 'Create new User' }}
+					<button type="submit" :disabled="UserStore.loading_create">
+						{{ UserStore.loading_create ? 'Creating...' : 'Create new User' }}
 					</button>
 					<br />
 				</form>
@@ -56,5 +54,5 @@ function closeModal() {
 		</Teleport>
 	</ClientOnly>
 
-	<p v-if="error" style="color: red">{{ error }}</p>
+	<p v-if="UserStore.error" style="color: red">{{ UserStore.error }}</p>
 </template>

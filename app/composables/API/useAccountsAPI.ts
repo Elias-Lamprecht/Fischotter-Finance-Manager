@@ -139,4 +139,19 @@ export function useAccountsAPI() {
 			loading.value = false;
 		}
 	}
+
+	return {
+		accounts,
+		totalAccounts,
+		lastPage,
+		loading,
+		error,
+		fetchAll,
+		fetchPagenized,
+		CreateAccount,
+		UpdateAccount,
+		DeleteAccount,
+		DeleteManyAccounts,
+		DeleteAllAccounts,
+	};
 }

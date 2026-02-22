@@ -4,7 +4,9 @@
 	<div class="management__page-header">
 		<button @click="showModal = true" class="management__button">Create Account</button>
 		<div class="management__delete-group">
-			<form @submit.prevent="DeleteSelectedAccounts(SelectedAccounts)">
+			<form
+				@submit.prevent="AccountStore.DeleteManyAccounts(AccountStore.selectedAccounts)"
+			>
 				<button type="submit" class="management__delete-button management__button">
 					Delete Selected Accounts
 				</button>
@@ -14,8 +16,8 @@
 	</div>
 	<div class="management__count-page-wrapper">
 		<div class="management__count-wrapper">
-			<p>Total Accounts: {{ TotalAccounts }}</p>
-			<p>Selected Accounts: {{ SelectedAccounts.length }}</p>
+			<p>Total Accounts: {{ AccountStore.totalAccounts }}</p>
+			<p>Selected Accounts: {{ AccountStore.selectedAccounts.length }}</p>
 		</div>
 	</div>
 
@@ -32,13 +34,17 @@
 			</div>
 
 			<div
-				v-for="account in accounts"
+				v-for="account in AccountStore.accounts"
 				:key="account.id"
 				class="EntityList__row"
-				:class="{ selected: SelectedAccounts.includes(account.id) }"
+				:class="{ selected: AccountStore.selectedAccounts.includes(account.id) }"
 			>
 				<div class="EntityList__list-item EntityList__list-checkbox-item">
-					<input type="checkbox" :value="account.id" v-model="SelectedAccounts" />
+					<input
+						type="checkbox"
+						:value="account.id"
+						v-model="AccountStore.selectedAccounts"
+					/>
 				</div>
 				<div class="EntityList__list-item">
 					<input type="text" :value="account.id" disabled />
@@ -66,13 +72,13 @@
 				<!-- Actions -->
 				<div class="EntityList__actions EntityList__list-item">
 					<button
-						@click="UpdateAccount(account)"
+						@click="AccountStore.UpdateAccount(account.id, account)"
 						class="management__button management__update-button"
 					>
 						Update
 					</button>
 					<button
-						@click="DeleteAccount(account.id)"
+						@click="AccountStore.DeleteAccount(account.id)"
 						class="management__button management__delete-button"
 					>
 						Delete
@@ -89,7 +95,11 @@
 		</div>
 		<p class="management__page-control__current-page">{{ page }}</p>
 		<div>
-			<button @click="NextPage" :disabled="page === lastPage" class="management__button">
+			<button
+				@click="NextPage"
+				:disabled="page === AccountStore.lastPage"
+				class="management__button"
+			>
 				Next Page
 			</button>
 		</div>
@@ -103,48 +113,30 @@
 import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAccountsForm.vue';
 import CreateNewAccountForm from '@/components/management/accounts/CreateNewAccountForm.vue';
 
-// COMPOSABLES
-import { useFetchPagenizedAccounts } from '@/composables/Accounts/useFetchPagenizedAccounts';
-import { useUpdateAccount } from '@/composables/Accounts/useUpdateAccount';
-import { useDeleteAccount } from '~/composables/Accounts/delete/useDeleteAccount';
-import { useDeleteSelectedAccounts } from '~/composables/Accounts/delete/useDeleteSelectedAccounts';
+import { useAccountStore } from '@/stores/accounts';
+
+let page = 1;
+
+const AccountStore = useAccountStore();
+const UserStore = useUserStore();
 
 const showModal = ref(false);
 
-const {
-	accounts,
-	TotalAccounts,
-	lastPage,
-	error: fetchError,
-	page,
-	FetchPagenizedAccounts,
-} = useFetchPagenizedAccounts();
-
-const {
-	error: deleteSelectedError,
-	SelectedAccounts,
-	DeleteSelectedAccounts,
-} = useDeleteSelectedAccounts();
-
-const { error: DeleteError, DeleteAccount } = useDeleteAccount();
-
-const { error: UpdateError, UpdateAccount } = useUpdateAccount();
-
 async function NextPage() {
-	if (page.value < lastPage.value) {
-		page.value++;
-		await FetchPagenizedAccounts();
+	if (page < AccountStore.lastPage) {
+		page++;
+		await AccountStore.fetchPagenizedAccounts(page, 10);
 	}
 }
 
 async function PreviousPage() {
-	if (page.value > 1) {
-		page.value--;
-		await FetchPagenizedAccounts();
+	if (page > 1) {
+		page--;
+		await AccountStore.fetchPagenizedAccounts(page, 10);
 	}
 }
 
 onMounted(async () => {
-	FetchPagenizedAccounts();
+	AccountStore.fetchPagenizedAccounts(1, 10);
 });
 </script>

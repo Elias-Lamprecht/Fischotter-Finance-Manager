@@ -1,19 +1,18 @@
 <template>
-	<form @submit.prevent="DeleteAllTransactions()">
+	<form @submit.prevent="TransactionStore.DeleteAllTransactions()">
 		<button
 			type="submit"
-			:disabled="loading"
+			:disabled="TransactionStore.loading_deleteAll"
 			class="management__delete-button management__button"
 		>
-			{{ loading ? 'Deleting...' : 'Delete all Transactions' }}
+			{{ TransactionStore.loading_deleteAll ? 'Deleting...' : 'Delete all Transactions' }}
 		</button>
 	</form>
 
-	<p v-if="error" style="color: red">{{ error }}</p>
+	<p v-if="TransactionStore.error" style="color: red">{{ TransactionStore.error }}</p>
 </template>
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
-import { useDeleteAllTransactions } from '~/composables/Transactions/delete/useDeleteAllTransactions';
-
-const { error, loading, DeleteAllTransactions } = useDeleteAllTransactions();
+import { useTransactionStore } from '@/stores/transactions';
+const TransactionStore = useTransactionStore();
 </script>

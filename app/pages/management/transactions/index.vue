@@ -4,7 +4,13 @@
 	<div class="management__page-header">
 		<button @click="showModal = true" class="management__button">Create Transaction</button>
 		<div class="management__delete-group">
-			<form @submit.prevent="DeleteSelectedTransactions(SelectedTransactions)">
+			<form
+				@submit.prevent="
+					TransactionStore.DeleteManyTransactions(
+						TransactionStore.selectedTransactions,
+					)
+				"
+			>
 				<button type="submit" class="management__delete-button management__button">
 					Delete Selected Transactions
 				</button>
@@ -15,8 +21,8 @@
 
 	<div class="management__count-page-wrapper">
 		<div class="management__count-wrapper">
-			<p>Total Transactions: {{ TotalTransactions }}</p>
-			<p>Selected Transactions: {{ SelectedTransactions.length }}</p>
+			<p>Total Transactions: {{ TransactionStore.totalTransactions }}</p>
+			<p>Selected Transactions: {{ TransactionStore.selectedTransactions.length }}</p>
 		</div>
 	</div>
 
@@ -38,16 +44,18 @@
 				<div class="EntityList__header"><b>Actions</b></div>
 			</div>
 			<div
-				v-for="transaction in transactions"
+				v-for="transaction in TransactionStore.transactions"
 				:key="transaction.id"
 				class="EntityList__row EntityList__row--transaction"
-				:class="{ selected: SelectedTransactions.includes(transaction.id) }"
+				:class="{
+					selected: TransactionStore.selectedTransactions.includes(transaction.id),
+				}"
 			>
 				<div>
 					<input
 						type="checkbox"
 						:value="transaction.id"
-						v-model="SelectedTransactions"
+						v-model="TransactionStore.selectedTransactions"
 					/>
 				</div>
 				<div><input type="text" :value="transaction.id" disabled /></div>
@@ -85,13 +93,15 @@
 				</div>
 				<div class="EntityList__actions">
 					<button
-						@click="UpdateTransaction(transaction)"
+						@click="
+							TransactionStore.UpdateTransaction(transaction.id, transaction)
+						"
 						class="management__button management__update-button"
 					>
 						Update Transaction
 					</button>
 					<button
-						@click="DeleteTransaction(transaction.id)"
+						@click="TransactionStore.DeleteTransaction(transaction.id)"
 						class="management__button management__delete-button"
 					>
 						Delete Transaction
@@ -108,7 +118,11 @@
 		</div>
 		<p class="management__page-control__current-page">{{ page }}</p>
 		<div>
-			<button @click="NextPage" :disabled="page === lastPage" class="management__button">
+			<button
+				@click="NextPage"
+				:disabled="page === TransactionStore.lastPage"
+				class="management__button"
+			>
 				Next Page
 			</button>
 		</div>
@@ -117,63 +131,34 @@
 </template>
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
-// COMPOSABLES
-import { useFetchPagenizedTransactions } from '@/composables/Transactions/useFetchPagenizedTransactions';
-import { useDeleteTransaction } from '~/composables/Transactions/delete/useDeleteTransaction';
-import { useUpdateTransaction } from '@/composables/Transactions/useUpdateTransaction';
-import { useDeleteSelectedTransactions } from '~/composables/Transactions/delete/useDeleteSelectedTransactions';
-
 // COMPONENTS
 import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue';
 import DeleteAllTransactionsForm from '@/components/management/transactions/DeleteAllTransactionsForm.vue';
 
 const showModal = ref(false);
 
-const {
-	transactions,
-	TotalTransactions,
-	lastPage,
-	error: fetchError,
-	page,
-	FetchPagenizedTransactions,
-} = useFetchPagenizedTransactions();
-
-const { error: deleteTransactionError, DeleteTransaction } = useDeleteTransaction();
-
-const { error: updateTransactionError, UpdateTransaction } = useUpdateTransaction();
-
-const {
-	error: deleteSelectedTransactions,
-	SelectedTransactions,
-	DeleteSelectedTransactions,
-} = useDeleteSelectedTransactions();
+import { useTransactionStore } from '@/stores/transactions';
+const TransactionStore = useTransactionStore();
 
 const pageInput = ref(1);
+let page = 1;
 
-onMounted(() => FetchPagenizedTransactions());
+onMounted(() => TransactionStore.fetchPagenizedTransactions());
 
 async function NextPage() {
-	if (page.value < lastPage.value) {
-		page.value++;
-		pageInput.value = page.value;
-		await FetchPagenizedTransactions();
+	if (page < TransactionStore.lastPage) {
+		page++;
+		pageInput.value = page;
+		await TransactionStore.fetchPagenizedTransactions(page, 10);
 	}
 }
 
 async function PreviousPage() {
-	if (page.value > 1) {
-		page.value--;
-		pageInput.value = page.value;
-		await FetchPagenizedTransactions();
+	if (page > 1) {
+		page--;
+		pageInput.value = page;
+		await TransactionStore.fetchPagenizedTransactions(page, 10);
 	}
-}
-
-async function GoToPage() {
-	if (pageInput.value < 1) return;
-	if (pageInput.value > lastPage.value) return;
-
-	page.value = pageInput.value;
-	await FetchPagenizedTransactions();
 }
 </script>
 <style scoped src="@/assets/management/index.scss" lang="scss"></style>

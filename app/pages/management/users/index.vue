@@ -1,10 +1,10 @@
 <template>
-	<h2 class="management__page-title">Account Management</h2>
+	<h2 class="management__page-title">User Management</h2>
 
 	<div class="management__page-header">
 		<button @click="showModal = true" class="management__button">Create User</button>
 		<div class="management__delete-group">
-			<form @submit.prevent="DeleteSelectedUsers(SelectedUsers)">
+			<form @submit.prevent="UserStore.DeleteManyUsers(UserStore.selectedUsers)">
 				<button type="submit" class="management__delete-button management__button">
 					Delete Selected Users
 				</button>
@@ -15,8 +15,8 @@
 
 	<div class="management__count-page-wrapper">
 		<div class="management__count-wrapper">
-			<p>Total Users: {{ TotalUsers }}</p>
-			<p>Selected Users: {{ SelectedUsers.length }}</p>
+			<p>Total Users: {{ UserStore.totalUsers }}</p>
+			<p>Selected Users: {{ UserStore.selectedUsers.length }}</p>
 		</div>
 	</div>
 
@@ -34,25 +34,30 @@
 				<div class="EntityList__header"><b>Actions</b></div>
 			</div>
 			<div
-				v-for="user in users"
+				v-for="user in UserStore.users"
 				:key="user.id"
 				class="EntityList__row EntityList__row--user"
-				:class="{ selected: SelectedUsers.includes(user.id) }"
+				:class="{ selected: UserStore.selectedUsers.includes(user.id) }"
 			>
 				<div class="EntityList__list-item">
-					<input type="checkbox" :value="user.id" v-model="SelectedUsers" />
+					<input
+						type="checkbox"
+						:value="user.id"
+						v-model="UserStore.selectedUsers"
+					/>
 				</div>
 				<div class="EntityList__list-item">
 					<input type="text" :value="user.id" disabled />
 				</div>
-				<div class="EntityList__list-item">
-					<input type="text" v-model="user.email" />
-				</div>
+
 				<div class="EntityList__list-item">
 					<input type="text" v-model="user.username" />
 				</div>
 				<div class="EntityList__list-item">
 					<input type="text" v-model="user.displayname" />
+				</div>
+				<div class="EntityList__list-item">
+					<input type="text" v-model="user.email" />
 				</div>
 				<div class="EntityList__list-item">
 					<select v-model="user.role">
@@ -79,13 +84,13 @@
 				</div>
 				<div class="EntityList__actions EntityList__list-item">
 					<button
-						@click="UpdateUser(user)"
+						@click="UserStore.UpdateUser(user.id, user)"
 						class="management__button management__update-button"
 					>
 						Update User
 					</button>
 					<button
-						@click="DeleteUser(user.id)"
+						@click="UserStore.DeleteUser(user.id)"
 						class="management__button management__delete-button"
 					>
 						Delete User
@@ -102,7 +107,11 @@
 		</div>
 		<p class="management__page-control__current-page">{{ page }}</p>
 		<div>
-			<button @click="NextPage" :disabled="page === lastPage" class="management__button">
+			<button
+				@click="NextPage"
+				:disabled="page === UserStore.lastPage"
+				class="management__button"
+			>
 				Next Page
 			</button>
 		</div>
@@ -111,62 +120,42 @@
 </template>
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
-// COMPOSABLES
-import { useFetchPagenizedUsers } from '@/composables/Users/useFetchPagenizedUsers';
-import { useDeleteUser } from '@/composables/Users/delete/useDeleteUser';
-import { useDeleteSelectedUsers } from '@/composables/Users/delete/useDeleteSelectedUsers';
-import { useUpdateUser } from '@/composables/Users/useUpdateUser';
+import { useUserStore } from '@/stores/users';
+
+const UserStore = useUserStore();
 
 // COMPONENTS
 import DeleteAllUsersForm from '@/components/management/users/DeleteAllUsersForm.vue';
 import CreateNewUserForm from '@/components/management/users/CreateNewUserForm.vue';
 
+const pageInput = ref(1);
+let page = 1;
+
 const showModal = ref(false);
 
-const {
-	users,
-	TotalUsers,
-	lastPage,
-	error: fetchError,
-	page,
-	FetchPagenizedUsers,
-} = useFetchPagenizedUsers();
-
-const { error: deleteUserError, DeleteUser } = useDeleteUser();
-
-const {
-	error: deleteSelectedUsersError,
-	SelectedUsers,
-	DeleteSelectedUsers,
-} = useDeleteSelectedUsers();
-
-const { error: updateUserError, UpdateUser } = useUpdateUser();
-
-const pageInput = ref(1);
-
-onMounted(() => FetchPagenizedUsers());
+onMounted(() => UserStore.fetchPagenizedUsers());
 
 async function NextPage() {
-	if (page.value < lastPage.value) {
-		page.value++;
-		pageInput.value = page.value;
-		await FetchPagenizedUsers();
+	if (page < UserStore.lastPage) {
+		page++;
+		pageInput.value = page;
+		await UserStore.fetchPagenizedUsers(page, 10);
 	}
 }
 
 async function PreviousPage() {
-	if (page.value > 1) {
-		page.value--;
-		pageInput.value = page.value;
-		await FetchPagenizedUsers();
+	if (page > 1) {
+		page--;
+		pageInput.value = page;
+		await UserStore.fetchPagenizedUsers(page, 10);
 	}
 }
 
 async function GoToPage() {
 	if (pageInput.value < 1) return;
-	if (pageInput.value > lastPage.value) return;
+	if (pageInput.value > UserStore.lastPage) return;
 
-	page.value = pageInput.value;
-	await FetchPagenizedUsers();
+	page = pageInput.value;
+	await UserStore.fetchPagenizedUsers(page, 10);
 }
 </script>
