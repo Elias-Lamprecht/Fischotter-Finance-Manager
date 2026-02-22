@@ -1,19 +1,19 @@
 <template>
-	<form @submit.prevent="DeleteAllAccounts()">
+	<form @submit.prevent="AccountStore.DeleteAllAccounts()">
 		<button
 			type="submit"
-			:disabled="loading"
+			:disabled="AccountStore.loading_deleteAll"
 			class="management__delete-button management__button"
 		>
-			{{ loading ? 'Deleting...' : 'Delete all Accounts' }}
+			{{ AccountStore.loading_deleteAll ? 'Deleting...' : 'Delete all Accounts' }}
 		</button>
 	</form>
 
-	<p v-if="error" style="color: red">{{ error }}</p>
+	<p v-if="AccountStore.error" style="color: red">{{ AccountStore.error }}</p>
 </template>
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
-import { useDeleteAllAccounts } from '~/composables/Accounts/delete/useDeleteAllAccounts';
+import { useAccountStore } from '@/stores/accounts';
 
-const { error, loading, DeleteAllAccounts } = useDeleteAllAccounts();
+const AccountStore = useAccountStore();
 </script>
