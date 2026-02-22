@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import { useCreateNewTransaction } from '@/composables/Transactions/useCreateNewTransaction';
-import { useFetchAllUsers } from '@/composables/Users/useFetchAllUsers';
-import { useFetchAllAccounts } from '@/composables/Accounts/useFetchAllAccounts';
-
-// Form state
 const owner_id = ref('');
 const account_id = ref('');
 const title = ref('');
@@ -14,16 +9,21 @@ const day = ref(1);
 const month = ref(1);
 const year = ref(1);
 
-// Composables
-const { accounts, error: fetchAllAccountsError, FetchAllAccounts } = useFetchAllAccounts();
-const { users, error: fetchAllUserError, FetchAllUsers } = useFetchAllUsers();
-const { error, loading, CreateNewTransaction } = useCreateNewTransaction();
+import { useTransactionStore } from '@/stores/transactions';
+import { useUserStore } from '@/stores/users';
+import { useAccountStore } from '@/stores/accounts';
 
-onMounted(() => Promise.all([FetchAllAccounts(), FetchAllUsers()]));
+const TransactionStore = useTransactionStore();
+const AccountStore = useAccountStore();
+const UserStore = useUserStore();
 
-// Submit form
+onMounted(async () => {
+	AccountStore.fetchAllAccounts();
+	UserStore.fetchAllUsers();
+});
+
 function create() {
-	CreateNewTransaction({
+	TransactionStore.CreateTransaction({
 		owner_id: owner_id.value,
 		account_id: account_id.value,
 		title: title.value,
@@ -56,7 +56,11 @@ function closeModal() {
 					<div>
 						<label for="owner_id">Owner ID:</label>
 						<select id="owner_id" v-model="owner_id">
-							<option v-for="user in users" :value="user.id" :key="user.id">
+							<option
+								v-for="user in UserStore.users"
+								:value="user.id"
+								:key="user.id"
+							>
 								{{ user.username }}
 							</option>
 						</select>
@@ -65,7 +69,7 @@ function closeModal() {
 						<label for="account_id">Account ID:</label>
 						<select id="account_id" v-model="account_id">
 							<option
-								v-for="account in accounts"
+								v-for="account in AccountStore.accounts"
 								:value="account.id"
 								:key="account.id"
 							>
@@ -110,13 +114,17 @@ function closeModal() {
 						<input type="number" step="1" min="2025" />
 					</li>
 					<br />
-					<button type="submit" :disabled="loading">
-						{{ loading ? 'Creating...' : 'Create new Transaction' }}
+					<button type="submit" :disabled="TransactionStore.loading_create">
+						{{
+							TransactionStore.loading_create
+								? 'Creating...'
+								: 'Create new Transaction'
+						}}
 					</button>
 					<br />
 				</form>
 			</div>
 		</Teleport>
 	</ClientOnly>
-	<p>{{ error }}</p>
+	<p>{{ TransactionStore.error }}</p>
 </template>
