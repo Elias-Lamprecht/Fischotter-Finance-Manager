@@ -2,7 +2,12 @@
 	<h2 class="management__page-title">Transaction Management</h2>
 
 	<div class="management__page-header">
-		<button @click="showModal = true" class="management__button">Create Transaction</button>
+		<button
+			@click="showModal = true"
+			class="management__button"
+		>
+			Create Transaction
+		</button>
 		<div class="management__delete-group">
 			<form
 				@submit.prevent="
@@ -11,7 +16,10 @@
 					)
 				"
 			>
-				<button type="submit" class="management__delete-button management__button">
+				<button
+					type="submit"
+					class="management__delete-button management__button"
+				>
 					Delete Selected Transactions
 				</button>
 			</form>
@@ -58,12 +66,38 @@
 						v-model="TransactionStore.selectedTransactions"
 					/>
 				</div>
-				<div><input type="text" :value="transaction.id" disabled /></div>
-				<div><input type="text" v-model="transaction.owner_id" /></div>
-				<div><input type="text" v-model="transaction.account_id" /></div>
-				<div><input type="text" v-model="transaction.title" /></div>
 				<div>
-					<input type="text" v-model="transaction.description" />
+					<div class="input-wrapper">
+						<input
+							type="text"
+							:value="transaction.id"
+							disabled
+						/>
+					</div>
+				</div>
+				<div>
+					<input
+						type="text"
+						v-model="transaction.owner_id"
+					/>
+				</div>
+				<div>
+					<input
+						type="text"
+						v-model="transaction.account_id"
+					/>
+				</div>
+				<div>
+					<input
+						type="text"
+						v-model="transaction.title"
+					/>
+				</div>
+				<div>
+					<input
+						type="text"
+						v-model="transaction.description"
+					/>
 				</div>
 				<div>
 					<select v-model="transaction.type">
@@ -73,12 +107,31 @@
 					</select>
 				</div>
 				<div>
-					<input v-model="transaction.price" type="number" step="0.01" />
+					<input
+						v-model="transaction.price"
+						type="number"
+						step="0.01"
+					/>
 				</div>
 				<div class="EntityList__day-month-year">
-					<input type="number" step="1" min="1" v-model="transaction.day" />
-					<input type="number" step="1" min="1" v-model="transaction.month" />
-					<input type="number" step="1" min="2025" v-model="transaction.year" />
+					<input
+						type="number"
+						step="1"
+						min="1"
+						v-model="transaction.day"
+					/>
+					<input
+						type="number"
+						step="1"
+						min="1"
+						v-model="transaction.month"
+					/>
+					<input
+						type="number"
+						step="1"
+						min="2025"
+						v-model="transaction.year"
+					/>
 				</div>
 				<div>
 					{{
@@ -98,13 +151,19 @@
 						"
 						class="management__button management__update-button"
 					>
-						Update Transaction
+						<Upload
+							class="icon"
+							:size="20"
+						/>
 					</button>
 					<button
 						@click="TransactionStore.DeleteTransaction(transaction.id)"
 						class="management__button management__delete-button"
 					>
-						Delete Transaction
+						<Trash
+							class="icon"
+							:size="20"
+						/>
 					</button>
 				</div>
 			</div>
@@ -112,7 +171,11 @@
 	</div>
 	<nav class="management__page-control">
 		<div>
-			<button @click="PreviousPage" :disabled="page === 1" class="management__button">
+			<button
+				@click="PreviousPage"
+				:disabled="page === 1"
+				class="management__button"
+			>
 				Previous Page
 			</button>
 		</div>
@@ -131,34 +194,36 @@
 </template>
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
-// COMPONENTS
-import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue';
-import DeleteAllTransactionsForm from '@/components/management/transactions/DeleteAllTransactionsForm.vue';
+	import { Trash, Upload } from 'lucide-vue-next';
 
-const showModal = ref(false);
+	// COMPONENTS
+	import CreateNewTransactionForm from '@/components/management/transactions/CreateNewTransactionForm.vue';
+	import DeleteAllTransactionsForm from '@/components/management/transactions/DeleteAllTransactionsForm.vue';
 
-import { useTransactionStore } from '@/stores/transactions';
-const TransactionStore = useTransactionStore();
+	const showModal = ref(false);
 
-const pageInput = ref(1);
-let page = 1;
+	import { useTransactionStore } from '@/stores/transactions';
+	const TransactionStore = useTransactionStore();
 
-onMounted(() => TransactionStore.fetchPagenizedTransactions());
+	const pageInput = ref(1);
+	let page = 1;
 
-async function NextPage() {
-	if (page < TransactionStore.lastPage) {
-		page++;
-		pageInput.value = page;
-		await TransactionStore.fetchPagenizedTransactions(page, 10);
+	onMounted(() => TransactionStore.fetchPagenizedTransactions());
+
+	async function NextPage() {
+		if (page < TransactionStore.lastPage) {
+			page++;
+			pageInput.value = page;
+			await TransactionStore.fetchPagenizedTransactions(page, 10);
+		}
 	}
-}
 
-async function PreviousPage() {
-	if (page > 1) {
-		page--;
-		pageInput.value = page;
-		await TransactionStore.fetchPagenizedTransactions(page, 10);
+	async function PreviousPage() {
+		if (page > 1) {
+			page--;
+			pageInput.value = page;
+			await TransactionStore.fetchPagenizedTransactions(page, 10);
+		}
 	}
-}
 </script>
 <style scoped src="@/assets/management/index.scss" lang="scss"></style>
