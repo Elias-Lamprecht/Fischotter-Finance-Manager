@@ -2,12 +2,20 @@
 	<h2 class="management__page-title">Account Management</h2>
 
 	<div class="management__page-header">
-		<button @click="showModal = true" class="management__button">Create Account</button>
+		<button
+			@click="showModal = true"
+			class="management__button"
+		>
+			Create Account
+		</button>
 		<div class="management__delete-group">
 			<form
 				@submit.prevent="AccountStore.DeleteManyAccounts(AccountStore.selectedAccounts)"
 			>
-				<button type="submit" class="management__delete-button management__button">
+				<button
+					type="submit"
+					class="management__delete-button management__button"
+				>
 					Delete Selected Accounts
 				</button>
 			</form>
@@ -47,13 +55,25 @@
 					/>
 				</div>
 				<div class="EntityList__list-item">
-					<input type="text" :value="account.id" disabled />
+					<div class="input-wrapper">
+						<input
+							type="text"
+							:value="account.id"
+							disabled
+						/>
+					</div>
 				</div>
 				<div class="EntityList__list-item">
-					<input type="text" v-model="account.owner_id" />
+					<input
+						type="text"
+						v-model="account.owner_id"
+					/>
 				</div>
 				<div class="EntityList__list-item">
-					<input type="text" v-model="account.title" />
+					<input
+						type="text"
+						v-model="account.title"
+					/>
 				</div>
 				<div class="EntityList__list-item">
 					<textarea v-model="account.description"></textarea>
@@ -75,13 +95,19 @@
 						@click="AccountStore.UpdateAccount(account.id, account)"
 						class="management__button management__update-button"
 					>
-						Update
+						<Upload
+							class="icon"
+							:size="20"
+						/>
 					</button>
 					<button
 						@click="AccountStore.DeleteAccount(account.id)"
 						class="management__button management__delete-button"
 					>
-						Delete
+						<Trash
+							class="icon"
+							:size="20"
+						/>
 					</button>
 				</div>
 			</div>
@@ -89,7 +115,11 @@
 	</div>
 	<nav class="management__page-control">
 		<div>
-			<button @click="PreviousPage" :disabled="page === 1" class="management__button">
+			<button
+				@click="PreviousPage"
+				:disabled="page === 1"
+				class="management__button"
+			>
 				Previous Page
 			</button>
 		</div>
@@ -109,34 +139,36 @@
 
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
-// COMPONENTS
-import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAccountsForm.vue';
-import CreateNewAccountForm from '@/components/management/accounts/CreateNewAccountForm.vue';
+	import { Trash, Upload } from 'lucide-vue-next';
 
-import { useAccountStore } from '@/stores/accounts';
+	// COMPONENTS
+	import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAccountsForm.vue';
+	import CreateNewAccountForm from '@/components/management/accounts/CreateNewAccountForm.vue';
 
-let page = 1;
+	import { useAccountStore } from '@/stores/accounts';
 
-const AccountStore = useAccountStore();
-const UserStore = useUserStore();
+	let page = 1;
 
-const showModal = ref(false);
+	const AccountStore = useAccountStore();
+	const UserStore = useUserStore();
 
-async function NextPage() {
-	if (page < AccountStore.lastPage) {
-		page++;
-		await AccountStore.fetchPagenizedAccounts(page, 10);
+	const showModal = ref(false);
+
+	async function NextPage() {
+		if (page < AccountStore.lastPage) {
+			page++;
+			await AccountStore.fetchPagenizedAccounts(page, 10);
+		}
 	}
-}
 
-async function PreviousPage() {
-	if (page > 1) {
-		page--;
-		await AccountStore.fetchPagenizedAccounts(page, 10);
+	async function PreviousPage() {
+		if (page > 1) {
+			page--;
+			await AccountStore.fetchPagenizedAccounts(page, 10);
+		}
 	}
-}
 
-onMounted(async () => {
-	AccountStore.fetchPagenizedAccounts(1, 10);
-});
+	onMounted(async () => {
+		AccountStore.fetchPagenizedAccounts(1, 10);
+	});
 </script>
