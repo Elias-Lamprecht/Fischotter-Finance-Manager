@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
 				owner_id: FullAuthCookieContent.id,
 				title: body.title,
 				description: body.description,
+				primary: body.primary,
 			})
 			.returning();
 
