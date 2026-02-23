@@ -1,49 +1,61 @@
 <script setup lang="ts">
-import { useAccountStore } from '@/stores/accounts';
-import { useUserStore } from '@/stores/users';
+	import { useAccountStore } from '@/stores/accounts';
+	import { useUserStore } from '@/stores/users';
 
-const AccountStore = useAccountStore();
-const UserStore = useUserStore();
+	const AccountStore = useAccountStore();
+	const UserStore = useUserStore();
 
-const owner_id = ref('');
-const title = ref('');
-const description = ref('');
+	const owner_id = ref('');
+	const title = ref('');
+	const description = ref('');
+	const primary = ref(false);
 
-onMounted(async () => {
-	AccountStore.fetchAllAccounts();
-	UserStore.fetchAllUsers();
-});
-
-// Submit form
-function submit() {
-	AccountStore.CreateAccount({
-		owner_id: owner_id.value,
-		title: title.value,
-		description: description.value,
+	onMounted(async () => {
+		AccountStore.fetchAllAccounts();
+		UserStore.fetchAllUsers();
 	});
-	closeModal();
-}
 
-const props = defineProps({
-	show: Boolean,
-});
-const emit = defineEmits(['update:show']);
+	// Submit form
+	function submit() {
+		AccountStore.CreateAccount({
+			owner_id: owner_id.value,
+			title: title.value,
+			description: description.value,
+			primary: primary.value,
+		});
+		closeModal();
+	}
 
-function closeModal() {
-	emit('update:show', false);
-}
+	const props = defineProps({
+		show: Boolean,
+	});
+	const emit = defineEmits(['update:show']);
+
+	function closeModal() {
+		emit('update:show', false);
+	}
 </script>
 
 <template>
 	<ClientOnly>
 		<Teleport to="body">
-			<div v-if="show" class="overlay" @click.self="closeModal">
-				<form @submit.prevent="submit()" class="modal">
+			<div
+				v-if="show"
+				class="overlay"
+				@click.self="closeModal"
+			>
+				<form
+					@submit.prevent="submit()"
+					class="modal"
+				>
 					<h2>Create New Account</h2>
 
 					<div>
 						<label for="owner_id">Owner:</label>
-						<select id="owner_id" v-model="owner_id">
+						<select
+							id="owner_id"
+							v-model="owner_id"
+						>
 							<option
 								v-for="user in UserStore.users"
 								:value="user.id"
@@ -55,20 +67,44 @@ function closeModal() {
 					</div>
 
 					<div>
+						<label for="primary">Primary</label>
+						<input
+							type="checkbox"
+							v-model="primary"
+						/>
+					</div>
+
+					<div>
 						<label for="title">Title:</label>
-						<input id="title" v-model="title" type="text" required />
+						<input
+							id="title"
+							v-model="title"
+							type="text"
+							required
+						/>
 					</div>
 
 					<div>
 						<label for="description">Description:</label>
-						<textarea id="description" v-model="description"></textarea>
+						<textarea
+							id="description"
+							v-model="description"
+						></textarea>
 					</div>
 
-					<button type="submit" :disabled="AccountStore.loading_create">
+					<button
+						type="submit"
+						:disabled="AccountStore.loading_create"
+					>
 						{{ AccountStore.loading_create ? 'Creating...' : 'Create' }}
 					</button>
 
-					<p v-if="AccountStore.error" class="error">{{ AccountStore.error }}</p>
+					<p
+						v-if="AccountStore.error"
+						class="error"
+					>
+						{{ AccountStore.error }}
+					</p>
 				</form>
 			</div>
 		</Teleport>
