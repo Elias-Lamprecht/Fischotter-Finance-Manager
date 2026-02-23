@@ -35,6 +35,7 @@
 				<div class="EntityList__header"><b>Select</b></div>
 				<div class="EntityList__header"><b>ID</b></div>
 				<div class="EntityList__header"><b>Owner ID</b></div>
+				<div class="EntityList__header"><b>Primary</b></div>
 				<div class="EntityList__header"><b>Title</b></div>
 				<div class="EntityList__header"><b>Description</b></div>
 				<div class="EntityList__header"><b>Created At</b></div>
@@ -67,6 +68,12 @@
 					<input
 						type="text"
 						v-model="account.owner_id"
+					/>
+				</div>
+				<div class="EntityList__list-item">
+					<input
+						type="checkbox"
+						v-model="account.primary"
 					/>
 				</div>
 				<div class="EntityList__list-item">
