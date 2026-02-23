@@ -2,10 +2,18 @@
 	<h2 class="management__page-title">User Management</h2>
 
 	<div class="management__page-header">
-		<button @click="showModal = true" class="management__button">Create User</button>
+		<button
+			@click="showModal = true"
+			class="management__button"
+		>
+			Create User
+		</button>
 		<div class="management__delete-group">
 			<form @submit.prevent="UserStore.DeleteManyUsers(UserStore.selectedUsers)">
-				<button type="submit" class="management__delete-button management__button">
+				<button
+					type="submit"
+					class="management__delete-button management__button"
+				>
 					Delete Selected Users
 				</button>
 			</form>
@@ -47,17 +55,32 @@
 					/>
 				</div>
 				<div class="EntityList__list-item">
-					<input type="text" :value="user.id" disabled />
+					<div class="input-wrapper">
+						<input
+							type="text"
+							:value="user.id"
+							disabled
+						/>
+					</div>
 				</div>
 
 				<div class="EntityList__list-item">
-					<input type="text" v-model="user.username" />
+					<input
+						type="text"
+						v-model="user.username"
+					/>
 				</div>
 				<div class="EntityList__list-item">
-					<input type="text" v-model="user.displayname" />
+					<input
+						type="text"
+						v-model="user.displayname"
+					/>
 				</div>
 				<div class="EntityList__list-item">
-					<input type="text" v-model="user.email" />
+					<input
+						type="text"
+						v-model="user.email"
+					/>
 				</div>
 				<div class="EntityList__list-item">
 					<select v-model="user.role">
@@ -87,13 +110,19 @@
 						@click="UserStore.UpdateUser(user.id, user)"
 						class="management__button management__update-button"
 					>
-						Update User
+						<Upload
+							class="icon"
+							:size="20"
+						/>
 					</button>
 					<button
 						@click="UserStore.DeleteUser(user.id)"
 						class="management__button management__delete-button"
 					>
-						Delete User
+						<Trash
+							class="icon"
+							:size="20"
+						/>
 					</button>
 				</div>
 			</div>
@@ -101,7 +130,11 @@
 	</div>
 	<nav class="management__page-control">
 		<div>
-			<button @click="PreviousPage" :disabled="page === 1" class="management__button">
+			<button
+				@click="PreviousPage"
+				:disabled="page === 1"
+				class="management__button"
+			>
 				Previous Page
 			</button>
 		</div>
@@ -120,42 +153,43 @@
 </template>
 <style src="@/assets/management/index.scss" lang="scss"></style>
 <script setup lang="ts">
-import { useUserStore } from '@/stores/users';
+	import { Trash, Upload } from 'lucide-vue-next';
+	import { useUserStore } from '@/stores/users';
 
-const UserStore = useUserStore();
+	const UserStore = useUserStore();
 
-// COMPONENTS
-import DeleteAllUsersForm from '@/components/management/users/DeleteAllUsersForm.vue';
-import CreateNewUserForm from '@/components/management/users/CreateNewUserForm.vue';
+	// COMPONENTS
+	import DeleteAllUsersForm from '@/components/management/users/DeleteAllUsersForm.vue';
+	import CreateNewUserForm from '@/components/management/users/CreateNewUserForm.vue';
 
-const pageInput = ref(1);
-let page = 1;
+	const pageInput = ref(1);
+	let page = 1;
 
-const showModal = ref(false);
+	const showModal = ref(false);
 
-onMounted(() => UserStore.fetchPagenizedUsers());
+	onMounted(() => UserStore.fetchPagenizedUsers());
 
-async function NextPage() {
-	if (page < UserStore.lastPage) {
-		page++;
-		pageInput.value = page;
+	async function NextPage() {
+		if (page < UserStore.lastPage) {
+			page++;
+			pageInput.value = page;
+			await UserStore.fetchPagenizedUsers(page, 10);
+		}
+	}
+
+	async function PreviousPage() {
+		if (page > 1) {
+			page--;
+			pageInput.value = page;
+			await UserStore.fetchPagenizedUsers(page, 10);
+		}
+	}
+
+	async function GoToPage(page: number) {
+		if (page < 1) return;
+		if (page > UserStore.lastPage) return;
+
+		page = pageInput.value;
 		await UserStore.fetchPagenizedUsers(page, 10);
 	}
-}
-
-async function PreviousPage() {
-	if (page > 1) {
-		page--;
-		pageInput.value = page;
-		await UserStore.fetchPagenizedUsers(page, 10);
-	}
-}
-
-async function GoToPage() {
-	if (pageInput.value < 1) return;
-	if (pageInput.value > UserStore.lastPage) return;
-
-	page = pageInput.value;
-	await UserStore.fetchPagenizedUsers(page, 10);
-}
 </script>
