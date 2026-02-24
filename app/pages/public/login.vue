@@ -56,7 +56,7 @@
 		</fieldset>
 	</div>
 </template>
-
+<style src="@/assets/public/auth.scss" lang="scss"></style>
 <script setup lang="ts">
 	definePageMeta({
 		layout: 'public',
@@ -118,5 +118,3 @@
 		}
 	}
 </script>
-
-<style src="@/assets/public/auth.scss" lang="scss"></style>
