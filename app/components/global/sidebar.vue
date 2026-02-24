@@ -62,7 +62,7 @@
 			</div>
 		</div>
 
-		<div class="sidebar__section">
+		<div class="sidebar__section" v-if="LoggedInUserStore.UserData.role == 'admin'">
 			<p class="sidebar__heading">Management Space</p>
 			<div class="sidebar__item">
 				<div class="sidebar__item-header">

@@ -103,10 +103,13 @@
 				return;
 			}
 
+			LoggedInUserStore.UserData = {};
+
 			LoggedInUserStore.SetLoggedInUserData({
 				username: response.data.user.username,
 				displayname: response.data.user.displayname,
 				email: response.data.user.email,
+				role: response.data.user.role,
 			});
 
 			router.push('/home');
