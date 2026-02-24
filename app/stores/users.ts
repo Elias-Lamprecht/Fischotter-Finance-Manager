@@ -14,6 +14,7 @@ const {
 	DeleteAllUsers,
 	DeleteManyUsers,
 	DeleteUser,
+	DeleteDisabledUsers,
 	UpdateUser,
 } = useUsersAPI();
 
@@ -31,6 +32,7 @@ export const useUserStore = defineStore('users', {
 		loading_deleteAll: false,
 		loading_deleteMany: false,
 		loading_delete: false,
+		loading_deleteDisabled: false,
 		loading_update: false,
 	}),
 
@@ -100,7 +102,7 @@ export const useUserStore = defineStore('users', {
 
 			await DeleteAllUsers();
 			await this.refreshUsers();
-               
+
 			this.loading_deleteAll = false;
 			this.error = error.value;
 		},
@@ -125,6 +127,17 @@ export const useUserStore = defineStore('users', {
 
 			this.error = error.value;
 			this.loading_delete = false;
+		},
+
+		async DeleteDisabledUsers() {
+			this.loading_deleteDisabled = true;
+			this.error = null;
+
+			await DeleteDisabledUsers();
+			await this.refreshUsers();
+               
+			this.error = error.value;
+			this.loading_deleteDisabled = false;
 		},
 	},
 });
