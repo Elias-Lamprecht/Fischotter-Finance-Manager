@@ -106,6 +106,25 @@ export function useUsersAPI() {
 		}
 	}
 
+	async function DeleteDisabledUsers() {
+		try {
+			const response = await $fetch<ApiResponse>(
+				'/api/management/delete/all/disabled-users',
+				{
+					method: 'DELETE',
+				},
+			);
+
+			if (response.state !== 'success') {
+				error.value = response.message || ERRORS.GENERAL.ERROR;
+			}
+		} catch (err) {
+			error.value = ERRORS.GENERAL.ERROR;
+		} finally {
+			loading.value = false;
+		}
+	}
+
 	async function DeleteManyUsers(ids: string[]) {
 		try {
 			const response = await $fetch<ApiResponse>('/api/management/delete/many/users', {
@@ -153,6 +172,7 @@ export function useUsersAPI() {
 		CreateUser,
 		UpdateUser,
 		DeleteUser,
+		DeleteDisabledUsers,
 		DeleteManyUsers,
 		DeleteAllUsers,
 	};
