@@ -4,6 +4,20 @@ export interface ApiResponse<T = any> {
 	message?: string;
 }
 
+export interface LoginApiResponse {
+	state: 'success' | 'error' | 'denied';
+	data?: {
+		token: string;
+		user: {
+			username: string;
+			displayname: string;
+			email: string;
+			role: string;
+		};
+	};
+	message?: string;
+}
+
 export type PaginatedResponse<T> =
 	| {
 			state: 'success';
