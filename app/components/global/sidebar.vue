@@ -24,6 +24,7 @@
 					<a
 						href="#"
 						class="sidebar__link"
+						@click="SwitchUserDashboard"
 						>Dashboard</a
 					>
 					<ChevronDown
@@ -72,6 +73,7 @@
 					<a
 						href="#"
 						class="sidebar__link"
+						@click="SwitchAdminDashboard"
 						>Dashboard</a
 					>
 					<ChevronDown
