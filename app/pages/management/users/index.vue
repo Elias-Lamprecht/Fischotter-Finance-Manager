@@ -17,6 +17,14 @@
 						Delete Selected Users
 					</button>
 				</form>
+				<form @submit.prevent="UserStore.DeleteDisabledUsers()">
+					<button
+						type="submit"
+						class="management__delete-button management__button"
+					>
+						Delete Disabled Users
+					</button>
+				</form>
 				<DeleteAllUsersForm />
 			</div>
 		</div>

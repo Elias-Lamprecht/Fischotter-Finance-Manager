@@ -14,6 +14,7 @@ const {
 	DeleteAllUsers,
 	DeleteManyUsers,
 	DeleteUser,
+	DeleteDisabledUsers,
 	UpdateUser,
 } = useUsersAPI();
 
@@ -31,6 +32,7 @@ export const useUserStore = defineStore('users', {
 		loading_deleteAll: false,
 		loading_deleteMany: false,
 		loading_delete: false,
+		loading_deleteDisabled: false,
 		loading_update: false,
 	}),
 
@@ -59,11 +61,25 @@ export const useUserStore = defineStore('users', {
 			this.error = error.value;
 		},
 
+		async refreshUsers() {
+			this.loading_fetchAll = true;
+			this.error = null;
+
+			await fetchAll();
+			this.users = users.value;
+			this.totalUsers = totalUsers.value;
+			this.lastPage = lastPage.value;
+
+			this.loading_fetchAll = false;
+			this.error = error.value;
+		},
+
 		async CreateUser(payload: CreateUserPayload) {
 			this.loading_create = true;
 			this.error = null;
 
 			await CreateUser(payload);
+			await this.refreshUsers();
 
 			this.error = error.value;
 			this.loading_create = false;
@@ -74,6 +90,7 @@ export const useUserStore = defineStore('users', {
 			this.error = null;
 
 			await UpdateUser(user_id, payload);
+			await this.refreshUsers();
 
 			this.error = error.value;
 			this.loading_update = false;
@@ -84,6 +101,7 @@ export const useUserStore = defineStore('users', {
 			this.loading_deleteAll = true;
 
 			await DeleteAllUsers();
+			await this.refreshUsers();
 
 			this.loading_deleteAll = false;
 			this.error = error.value;
@@ -94,6 +112,7 @@ export const useUserStore = defineStore('users', {
 			this.error = null;
 
 			await DeleteManyUsers(ids);
+			await this.refreshUsers();
 
 			this.error = error.value;
 			this.loading_deleteMany = false;
@@ -104,9 +123,21 @@ export const useUserStore = defineStore('users', {
 			this.error = null;
 
 			await DeleteUser(id);
+			await this.refreshUsers();
 
 			this.error = error.value;
 			this.loading_delete = false;
+		},
+
+		async DeleteDisabledUsers() {
+			this.loading_deleteDisabled = true;
+			this.error = null;
+
+			await DeleteDisabledUsers();
+			await this.refreshUsers();
+               
+			this.error = error.value;
+			this.loading_deleteDisabled = false;
 		},
 	},
 });
