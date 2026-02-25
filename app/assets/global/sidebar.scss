@@ -25,6 +25,13 @@
 		gap: 8px;
 	}
 
+	&__section--user {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+
+	}
+
 	&__item {
 		display: flex;
 		flex-direction: column;
@@ -72,5 +79,14 @@
 	&__user-profile-username {
 		font-size: 15px;
 		color: hsl(0, 0%, 60%);
+	}
+
+	&__logout-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: hsl(0, 0%, 11%);
+		border: none;
+		cursor: pointer;
 	}
 }
