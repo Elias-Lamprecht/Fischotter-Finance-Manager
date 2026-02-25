@@ -1,18 +1,196 @@
 .management {
-	&__delete-button {
-		border: 2px solid var(--error-border);
+	display: block;
+
+	&__page-title {
+		margin-top: 0.7rem;
+		text-align: center;
+	}
+
+	&__count-page-wrapper {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	&__count-wrapper {
+		font-weight: 600;
+		display: flex;
+		gap: 1rem;
+		background-color: var(--bg-input);
+		padding: 0.75rem;
 		border-radius: 6px;
-		padding: 4px;
-		background-color: var(--error-bg);
-		color: var(--error-color);
+	}
+
+	&__page-control {
+		gap: 1rem;
+		display: flex;
+		margin-top: 3rem;
+		margin-bottom: 5rem;
+		width: 100%;
+		justify-content: center;
+		&__current-page {
+			display: flex;
+			align-items: center;
+		}
+	}
+
+	&__button {
+		border-radius: 6px;
+		padding: 0.5rem 1rem;
+		cursor: pointer;
+		border-width: 2px;
+		border-style: solid;
+		font-weight: 500;
+		transition:
+			background 0.2s,
+			color 0.2s;
+	}
+
+	&__update-button {
+		background-color: transparent;
+		border-color: var(--border-primary);
+		color: var(--text-bright);
+	}
+
+	&__update-button:hover {
+		background-color: var(--bg-primary);
+		color: var(--text-primary);
+	}
+
+	&__delete-button {
+		border-color: var(--border-error);
+		background-color: transparent;
+		color: var(--text-bright);
+	}
+
+	&__delete-button:hover {
+		background-color: var(--bg-error);
+		color: var(--text-error);
+	}
+
+	&__page-header {
+		display: flex;
+		width: calc(100% - 2rem);
+		justify-content: space-between;
+		margin: 1rem;
+	}
+
+	&__delete-group {
+		display: flex;
+		gap: 1rem;
 	}
 }
 
-.ItemList {
-	display: flex;
-	flex-direction: row;
+.EntityList {
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	input {
+		text-align: center;
+	}
+
+	input,
+	textarea {
+		border-radius: 0.25rem;
+		font-size: 14px;
+		padding: 0.4rem;
+		width: 100%;
+	}
+
+	textarea {
+		resize: none;
+		min-height: 40px;
+	}
+
+	&__grid {
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	&__row {
+		display: grid;
+		grid-template-columns: 1fr 3fr 3fr 1fr 3fr 3fr 2fr 2fr;
+		align-items: center;
+		gap: 1rem;
+		padding: 0.5rem 0.75rem;
+		border-radius: 6px;
+		transition: background 0.2s;
+	}
+
+	&__actions {
+		display: flex;
+		flex-direction: row;
+	}
+
+	&__day-month-year {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	&__row--user {
+		grid-template-columns: 1fr 3fr 2fr 2fr 2fr 1fr 1fr 3fr 1fr;
+	}
+
+	&__row--transaction {
+		grid-template-columns: 0.2fr 1fr 1fr 1fr 1fr 1fr 0.2fr 1fr 1fr 1fr 1fr;
+	}
+
+	&__row:first-child {
+		font-weight: 600;
+		background: var(--bg-input);
+	}
+
+	&__row.selected {
+		background: var(--bg-selected);
+	}
+
+	&__header {
+		text-align: center;
+	}
+
+	&__list-checkbox-item,
+	&__list-date-item {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+
+	&__actions {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+	}
 }
 
-.ItemList.selected {
-	background: var(--selected-bg);
+.overlay {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.7);
+	z-index: 1000;
+}
+
+.modal {
+	background: var(--bg-body);
+	color: var(--text-bright);
+	padding: 2rem;
+	border-radius: 0.5rem;
+	width: 400px;
+	max-width: 90%;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.error {
+	color: var(--text-error);
+	margin-top: 0.5rem;
+	font-weight: 500;
 }

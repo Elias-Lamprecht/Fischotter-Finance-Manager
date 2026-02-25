@@ -19,13 +19,19 @@
 					class="auth-page__form-input"
 				/>
 
-				<input
-					v-model="password"
-					type="password"
-					placeholder="Password"
-					class="auth-page__form-input"
-					required
-				/>
+				<div class="auth-page__password-wrapper">
+					<input
+						v-model="password"
+						:type="view_status ? 'password' : 'text'"
+						placeholder="Password"
+						class="auth-page__form-input auth-page__password-input"
+						required
+					/>
+					<div @click="switchViewStatus()" class="icon">
+						<Eye v-if="view_status"></Eye>
+						<EyeClosed v-else></EyeClosed>
+					</div>
+				</div>
 
 				<a href="/public/login" class="auth-page__switch-link"> Login </a>
 
@@ -42,14 +48,22 @@
 		</fieldset>
 	</div>
 </template>
+<style src="@/assets/public/auth.scss" lang="scss"></style>
 
 <script setup lang="ts">
 definePageMeta({
 	layout: 'public',
 });
 
+const view_status = ref(true);
+
+function switchViewStatus() {
+	view_status.value = !view_status.value;
+}
+
 import { ref } from 'vue';
 import type { ApiResponse } from '@/types/API';
+import { Eye, EyeClosed } from 'lucide-vue-next';
 
 const username = ref('');
 const email = ref('');

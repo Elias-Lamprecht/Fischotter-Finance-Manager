@@ -4,11 +4,13 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	background-color: hsl(0, 0%, 8%);
 
 	&__fieldset {
 		padding: 24px;
 		border-radius: 12px;
 		width: 400px;
+		border-color: hsl(0, 0%, 80%);
 	}
 
 	&__legend {
@@ -16,6 +18,7 @@
 		margin-left: 8px;
 		margin-right: 8px;
 		font-size: 20px;
+		color: hsl(0, 0%, 80%);
 	}
 
 	&__form {
@@ -26,8 +29,27 @@
 
 	&__form-input {
 		padding: 8px;
-		border-radius: 6px;
+		border-radius: 3px;
+		border: none;
+		color: hsl(0, 0%, 80%);
 		font-size: 16px;
+		background-color: hsl(0, 0%, 11%);
+	}
+
+	&__password-wrapper {
+		border-radius: 3px;
+		display: flex;
+		background-color: hsl(0, 0%, 11%);
+		color: hsl(0, 0%, 80%);
+		align-items: center;
+		justify-content: center;
+		padding-right: 0.5rem;
+	}
+
+	&__password-input {
+		width: 100%;
+		background-color: transparent;
+		border: 0;
 	}
 
 	&__switch-link {
@@ -38,13 +60,17 @@
 		padding: 8px;
 		border-radius: 6px;
 		font-size: 16px;
+		background-color: hsl(0, 0%, 11%);
+		color: hsl(0, 0%, 80%);
+		border: none;
+		cursor: pointer;
 	}
 
 	&__error {
-		border: 2px solid var(--error-border);
+		border: 2px solid var(--border-error);
 		border-radius: 6px;
 		padding: 8px;
-		background-color: var(--error-bg);
-		color: var(--error-color);
+		background-color: var(--bg-error);
+		color: hsl(0, 0%, 80%);
 	}
 }

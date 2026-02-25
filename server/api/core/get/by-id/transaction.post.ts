@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 			.from(transaction)
 			.where(
 				and(
-					eq(body.id, transaction.id),
+					eq(transaction.id, body.id),
 					eq(transaction.owner_id, FullAuthCookieContent.id),
 				),
 			);

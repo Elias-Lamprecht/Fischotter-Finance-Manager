@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
-	compatibilityDate: '2025-07-15',
-	devtools: { enabled: true },
-	css: ['@/assets/global.scss'],
+ compatibilityDate: '2025-07-15',
+ devtools: { enabled: true },
+ css: ['@/assets/global.scss'],
+ modules: ['@pinia/nuxt'],
 });
