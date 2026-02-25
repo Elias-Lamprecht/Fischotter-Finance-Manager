@@ -1,4 +1,4 @@
-import { pgTintegerable, serial, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
 
 export const account = pgTable('accounts', {
 	id: serial('id').primaryKey(),
