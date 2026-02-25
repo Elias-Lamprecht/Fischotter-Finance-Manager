@@ -25,5 +25,3 @@ logs
 .env.*
 !.env.example
 
-# todos
-todos.md

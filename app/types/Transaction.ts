@@ -4,9 +4,9 @@ export interface Transaction {
 	account_id: string;
 	title: string;
 	description?: string;
-	year: string;
-	month: string;
-	day: string;
+	year: number;
+	month: number;
+	day: number;
 	type: string;
 	price: number;
 	created_at: Date;

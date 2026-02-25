@@ -61,5 +61,16 @@ export default defineEventHandler(async (event) => {
 		maxAge: 60 * 30,
 	});
 
-	return { state: 'success', data: token };
+	return {
+		state: 'success',
+		data: {
+			token,
+			user: {
+				username: userRecord.username,
+				displayname: userRecord.displayname,
+				email: userRecord.email,
+				role: userRecord.role,
+			},
+		},
+	};
 });

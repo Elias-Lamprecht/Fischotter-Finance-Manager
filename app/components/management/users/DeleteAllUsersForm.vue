@@ -1,13 +1,11 @@
 <template>
-	<form @submit.prevent="DeleteAllUsers()">
-		<button type="submit" :disabled="loading">
-			{{ loading ? 'Deleting...' : 'Delete all Users' }}
+	<form @submit.prevent="UserStore.DeleteAllUsers()">
+		<button type="submit" class="management__delete-button management__button">
+			{{ UserStore.loading_deleteAll ? 'Deleting...' : 'Delete All Users' }}
 		</button>
-		{{ error }}
 	</form>
 </template>
 <script setup lang="ts">
-import { useDeleteAllUsers } from '~/composables/Users/delete/useDeleteAllUsers';
-
-const { error, loading, DeleteAllUsers } = useDeleteAllUsers();
+import { useUserStore } from '@/stores/users';
+const UserStore = useUserStore();
 </script>

@@ -1,9 +1,9 @@
-import { pgTable, uuid, varchar, timestamp, numeric, integer } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, timestamp, numeric, integer, serial } from 'drizzle-orm/pg-core';
 
 export const transaction = pgTable('transactions', {
-	id: uuid('id').defaultRandom().primaryKey(),
-	owner_id: uuid('owner_id').notNull(),
-	account_id: uuid('account_id').notNull(),
+	id: serial('id').primaryKey(),
+	owner_id: serial('owner_id').notNull(),
+	account_id: serial('account_id').notNull(),
 	title: varchar('title', { length: 32 }).notNull(),
 	description: varchar('description', { length: 128 }),
 	type: varchar('type', { length: 16 }).notNull(),

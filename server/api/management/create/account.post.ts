@@ -26,6 +26,7 @@ export default defineEventHandler(async (event) => {
 				owner_id: body.owner_id,
 				title: body.title,
 				description: body.description,
+				primary: body.primary,
 			})
 			.returning();
 
