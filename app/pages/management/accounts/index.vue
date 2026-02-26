@@ -65,26 +65,19 @@
 						</div>
 					</div>
 					<div class="EntityList__list-item">
-						<input
-							type="text"
-							v-model="account.owner_id"
-						/>
 						<select v-model="account.owner_id">
 							<option
 								v-for="user in UserStore.users"
 								:key="user.id"
 								:value="user.id"
 							>
-								{{ user.username }}
+								{{user.id}} - {{ user.username }}
 							</option>
 						</select>
 					</div>
 					<div class="EntityList__list-item">
-					<input
-						type="checkbox"
-						v-model="account.primary"
-					/>
-				</div>
+						<Switch v-model:SwitchValue="account.primary" />
+					</div>
 				<div class="EntityList__list-item">
 						<input
 							type="text"
@@ -161,6 +154,7 @@
 	// COMPONENTS
 	import DeleteAllAccountsForm from '@/components/management/accounts/DeleteAllAccountsForm.vue';
 	import CreateNewAccountForm from '@/components/management/accounts/CreateNewAccountForm.vue';
+	import Switch from '@/components/ui/switch.vue'
 
 	import { useAccountStore } from '@/stores/accounts';
 	import { useUserStore } from '@/stores/users';
