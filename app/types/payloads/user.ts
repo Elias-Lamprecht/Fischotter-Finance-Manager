@@ -9,5 +9,5 @@ export interface UpdateUserPayload {
 	email?: string;
 	displayname?: string;
 	role?: 'user' | 'admin';
-	status?: 'active' | 'disabled';
+	status?: boolean;
 }

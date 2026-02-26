@@ -92,7 +92,7 @@
                               </select>
                          </div>
                          <div class="EntityList__list-item">
-                              <input type="checkbox" v-model="user.status" />
+                              <Switch v-model:SwitchValue="user.status" />
                          </div>
                          <div
                               class="EntityList__list-item EntityList__list-date-item"
@@ -161,6 +161,7 @@ const UserStore = useUserStore();
 // COMPONENTS
 import DeleteAllUsersForm from '@/components/management/users/DeleteAllUsersForm.vue';
 import CreateNewUserForm from '@/components/management/users/CreateNewUserForm.vue';
+import Switch from '@/components/ui/switch.vue'
 
 const pageInput = ref(1);
 let page = 1;

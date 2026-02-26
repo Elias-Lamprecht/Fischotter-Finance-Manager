@@ -4,6 +4,6 @@ export interface User {
      email?: string;
      displayname?: string;
      role: 'user' | 'admin';
-     status: 'active' | 'disabled';
+     status: boolean;
      created_at: string;
 }
