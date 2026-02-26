@@ -27,7 +27,7 @@ const toggle = () => {
   display: flex;            
   align-items: center;      
   padding: 4px;             
-  border-radius: 50%;    
+  border-radius: 9999px;    
   background-color: hsl(0, 0%, 13%); 
   transition: background-color 0.3s ease;
   cursor: pointer;
